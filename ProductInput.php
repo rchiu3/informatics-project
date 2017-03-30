@@ -134,8 +134,6 @@ if(isset($_POST['submit'])) {
                 <th>Product</th>
                 <th>Price</th>
                 <th>Quantity in Stock</th>
-                <th></th>
-                <th></th>
             </thead>
             
 <!-- Use php to display data -->
@@ -152,13 +150,6 @@ while($row = nextTuple($result)) {
     echo "<td>" . $row['ProductName'] . "</td>";
     echo "<td>" . $row['Price'] . "</td>";
     echo "<td>" . $row['Inventory'] . "</td>";
-                
-// link to update product
-    echo "<td><a href='UpdateProduct.php?id=" . $row['id']  .  "'>edit</a></td>";
-        
-// link to delete product
-    echo "<td><a href='DeleteProduct.php?id=" . $row['id']  .  "'>delete</a></td>";
-
     echo "</tr> \n";
     }
 ?>
