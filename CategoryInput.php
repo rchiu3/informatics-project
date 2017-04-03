@@ -9,7 +9,7 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         
-        <title>Manufacturer Input</title>
+        <title>Category Input</title>
     </head>
     
     <body>
@@ -51,7 +51,7 @@ if(isset($_POST['submit'])) {
     $result = queryDB($query, $db);
     
     //Inform user that insert statement was successfully executed
-    echo ("Successfully entered new category: " . $name);
+    echo ("Successfully entered new category: " . $CategoryName);
 }
 
 ?>
