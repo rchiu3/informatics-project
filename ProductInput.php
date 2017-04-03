@@ -77,7 +77,7 @@ if(isset($_POST['submit'])) {
 <!-- Link to CategoryInput.php -->
 <div class = "row">
     <div class = "col-xs-12">
-        <a href = "https://webdev.cs.uiowa.edu/~ruchiu/informatics-project/CategoryInput.php">Click here to enter new product categories</a>
+        <a href = "CategoryInput.php">Click here to enter new product categories</a>
     </div>
 </div>
 
