@@ -95,9 +95,9 @@ CREATE TABLE OrderLine (
 CREATE TABLE Employee (
     EmployeeID int unsigned NOT NULL AUTO_INCREMENT,
     EmployeeName varchar(50) NOT NULL,
-    EmployeeType varchar(35) NOT NULL,
-    EmployeeUser varchar(30) NOT NULL,
-    EmployeePass varchar(150) NOT NULL,
+    EmployeeAdmin BOOLEAN NOT NULL,
+    EmployeeEmail varchar(100) NOT NULL,
+    EmployeePass varchar(300) NOT NULL,
     StoreID int unsigned NOT NULL,
     PRIMARY KEY (EmployeeID),
     FOREIGN KEY (StoreID) REFERENCES Store(StoreID)
