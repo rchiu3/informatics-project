@@ -13,7 +13,30 @@
     </head>
     
     <body>
-        <div class = "container">
+        
+        <!-- Navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Store Overview</a>
+        </div>
+        
+        <ul class="nav navbar-nav">
+            <li><a href="GrocerHome.php">Home</a></li>
+            <li><a href="ProductInput.php">Product Input</a></li>
+            <li class="active"><a href="CategoryInput.php">Category Input</a></li>
+            <li><a href="#">Orders</a></li>
+            <li><a href="#">Employees</a></li>
+        </ul>
+        
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+    </div>
+</nav>
+        
+        <div class = "container" style = "margin-top:50px">
         
 <!-- PHP code to manage the data submitted by the form -->
 <?php
@@ -59,14 +82,7 @@ if(isset($_POST['submit'])) {
 <!-- Title -->
 <div class = "row">
     <div class = "col-xs-12">
-        <h1>Product Categories</h1>
-    </div>
-</div>
-
-<!-- Link to CategoryInput.php -->
-<div class = "row">
-    <div class = "col-xs-12">
-        <a href = "ProductInput.php">Click here to enter products</a>
+        <h1>Category Input</h1>
     </div>
 </div>
 
@@ -101,7 +117,7 @@ if(isset($_POST['submit'])) {
 <!-- Use php to display data -->
 <?php
     
-//query to find information about cars from database
+//query to find information about categories from database
 $query = 'SELECT CategoryName FROM Category ORDER BY CategoryName;';
     
 $result = queryDB($query, $db);

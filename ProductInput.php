@@ -11,9 +11,31 @@
         
         <title>Product Input</title>
     </head>
-    
     <body>
-        <div class = "container">
+    
+<!-- Navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Store Overview</a>
+        </div>
+        
+        <ul class="nav navbar-nav">
+            <li><a href="GrocerHome.php">Home</a></li>
+            <li class="active"><a href="ProductInput.php">Product Input</a></li>
+            <li><a href="CategoryInput.php">Category Input</a></li>
+            <li><a href="#">Orders</a></li>
+            <li><a href="#">Employees</a></li>
+        </ul>
+        
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="GrocerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <li><a href="GrocerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class = "container" style = "margin-top:50px">
         
 <!-- PHP code to manage the data submitted by the form -->
 <?php
@@ -28,6 +50,7 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 //Check to see if Save button at the end of the form was clicked
 if(isset($_POST['submit'])) {
     
+    $ProductID = $_Post['ProductID'];
     $CategoryID = $_POST['Category-CategoryID'];
     $Price = $_POST['Price'];
     $ProductName = $_POST['ProductName'];
@@ -52,7 +75,7 @@ if(isset($_POST['submit'])) {
     }
     
     if(!$isComplete) {
-        punt($errorMessage);
+        punt ($errorMessage);
     }
 
     //SQL to insert data from completed form into database as a new record
@@ -61,8 +84,13 @@ if(isset($_POST['submit'])) {
     //run the insert statement
     $result = queryDB($query, $db);
     
-    //Inform user that insert statement was successfully executed
-    echo ("Successfully entered new product: " . $ProductName);
+    // Inform user that insert statement was successfully executed
+    if ($isComplete) {
+    echo "<br>";
+    echo "<div class='alert alert-success'>";
+        echo ("<strong>Success!</strong> Entered new product: " . $ProductName);
+    echo "</div>";
+    }
 }
 
 ?>
@@ -71,13 +99,6 @@ if(isset($_POST['submit'])) {
 <div class = "row">
     <div class = "col-xs-12">
         <h1>Product Input</h1>
-    </div>
-</div>
-
-<!-- Link to CategoryInput.php -->
-<div class = "row">
-    <div class = "col-xs-12">
-        <a href = "CategoryInput.php">Click here to enter new product categories</a>
     </div>
 </div>
 
@@ -134,13 +155,15 @@ if(isset($_POST['submit'])) {
                 <th>Product</th>
                 <th>Price</th>
                 <th>Quantity in Stock</th>
+                <th></th>
+                <th></th>
             </thead>
             
 <!-- Use php to display data -->
 <?php
     
 //query to find information about cars from database
-$query = 'SELECT P.ProductName, P.Price, P.Inventory, P.Picture, C.CategoryName FROM Product P, Category C WHERE P.CategoryID = C.CategoryID;';
+$query = 'SELECT P.ProductID, P.ProductName, P.Price, P.Inventory, P.Picture, C.CategoryName FROM Product P, Category C WHERE P.CategoryID = C.CategoryID;';
     
 $result = queryDB($query, $db);
     
@@ -150,6 +173,8 @@ while($row = nextTuple($result)) {
     echo "<td>" . $row['ProductName'] . "</td>";
     echo "<td>" . $row['Price'] . "</td>";
     echo "<td>" . $row['Inventory'] . "</td>";
+    echo "<td><a href='UpdateProduct.php?ProductID=" . $row['ProductID'] . "'>edit</a></td>";
+    echo "<td><a href='DeleteProduct.php?ProductID=" . $row['ProductID'] . "'>delete</a></td>";
     echo "</tr> \n";
     }
 ?>
