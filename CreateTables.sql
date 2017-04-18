@@ -31,7 +31,7 @@ CREATE TABLE Order_T (
     Paid BOOLEAN,
     CustomerID int unsigned NOT NULL,
     DeliveryDate DATE NOT NULL,
-    DeliveryAddress varchar (150) NOT NULL,
+    DeliveryAddress varchar(150) NOT NULL,
     OrderStatus varchar(50),
     PRIMARY KEY (OrderID),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
@@ -141,7 +141,7 @@ CREATE TABLE Payment (
 	CSV int(10) NOT NULL,
 	ExpirationDate varchar(10) NOT NULL,
 	CardType varchar(20) NOT NULL,
-	PRIMARY KEY (PaymentID),
+	PRIMARY KEY (PaymentID)
 	
 );
 	
