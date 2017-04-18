@@ -123,6 +123,7 @@ CREATE TABLE Employee (
     EmployeeName varchar(50) NOT NULL,
     EmployeeAdmin BOOLEAN NOT NULL,
     EmployeeEmail varchar(100) NOT NULL,
+    EmployeeUser varchar(100) NOT NULL,
     EmployeePass varchar(300) NOT NULL,
     StoreID int unsigned NOT NULL,
     PRIMARY KEY (EmployeeID),
