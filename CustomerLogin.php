@@ -61,11 +61,128 @@ background-color:#4CAF50;
   </ul>
 
    <ul class="nav navbar-nav navbar-right">
-      <li><a href="GrocerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="GrocerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
    </ul>
     </div>
 </nav>
+	
+	<div class="container" style="margin-top:50px">
+
+
+<!-- Visible title -->
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Login</h1>
+            </div>
+        </div>
+
+<!-- Processing form input -->
+        <div class="row">
+            <div class="col-xs-12">
+
+
+<?php
+//
+// Code to handle input from form
+//
+
+if (isset($_POST['submit'])) {
+    // only run if the form was submitted
+
+    // get data from form
+    $CustomerEmail = $_POST['CustomerEmail'];
+	$CustomerPass = $_POST['CustomerPass'];
+
+   // connect to the database
+    $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+
+    // check for required fields
+    $isComplete = true;
+    $errorMessage = "";
+
+    if (!$CustomerEmail) {
+        $errorMessage .= " Please enter an email.";
+        $isComplete = false;
+    } else {
+        $CustomerEmail = makeStringSafe($db, $CustomerEmail);
+    }
+
+    if (!$CustomerPass) {
+        $errorMessage .= " Please enter a password.";
+        $isComplete = false;
+    }
+
+    if (!$isComplete) {
+        punt($errorMessage);
+    }
+
+    // get the hashed password from the user with the email that got entered
+    $query = "SELECT CustomerEmail, CustomerPass FROM Customer WHERE CustomerEmail='" . $CustomerEmail . "';";
+    $result = queryDB($query, $db);
+    if (nTuples($result) > 0) {
+        // there is an account that corresponds to the email that the user entered
+		// get the hashed password for that account
+		$row = nextTuple($result);
+		$hashedpass = $row['CustomerPass'];
+
+		// compare entered password to the password on the database
+		if ($hashedpass == crypt($CustomerPass, $hashedpass)) {
+			// password was entered correctly
+
+			// start a session
+			if (session_start()) {
+				$_SESSION['CustomerEmail'] = $CustomerEmail;
+				header('Location: CustomerInput.php');
+				exit;
+			} else {
+				// if we can't start a session
+				punt("Unable to start session when logging in.");
+			}
+		} else {
+			// wrong password
+			punt("Wrong password. <a href='CustomerLogin.php'>Try again</a>.");
+		}
+    } else {
+		// email entered is not in the users table
+		punt("This email is not in our system. <a href='CustomerLogin.php'>Try again</a>.");
+	}
+}
+?>
+            </div>
+        </div>
+
+<!-- form for inputting data -->
+        <div class="row">
+            <div class="col-xs-12">
+
+<form action="CustomerLogin.php" method="post">
+<!-- email -->
+    <div class="form-group">
+        <label for="CustomerEmail">Email</label>
+        <input type="email" class="form-control" name="CustomerEmail"/>
+    </div>
+
+<!-- password -->
+    <div class="form-group">
+        <label for="CustomerPass">Password</label>
+        <input type="password" class="form-control" name="CustomerPass"/>
+    </div>
+
+    <button type="submit" class="btn btn-default" name="submit">Login</button>
+</form>
+
+<div class="row">
+	<div class="col-xs-12">
+		<p>Don't have an account? <a href = "CustomerInput.php">Click here to create one.</a></p>
+	</div>
+</div>
+
+            </div>
+        </div>
+
+</div>
+</div>
 
 </body>
 </html>

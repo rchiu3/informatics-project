@@ -53,19 +53,21 @@ background-color:#4CAF50;
         </div>
 
   <ul class="nav navbar-nav">
-	  <li><a class="active" href="CustomerHome.php">Home</a></li>
-	  <li><a href="Product.php">Products</a></li>
-	  <li><a href="CustomerLogin.php">Login</a></li>
-	  <li><a href="ShoppingCart.php">Shopping Cart</a></li>
-	  <li><a href="Checkout.php">Check Out</a></li>
+  	<li><a class="active" href="CustomerHome.php">Home</a></li>
+  	<li><a href="Product.php">Products</a></li>
+  	<li><a href="CustomerLogin.php">Login</a></li>
+  	<li><a href="ShoppingCart.php">Shopping Cart</a></li>
+  	<li><a href="Checkout.php">Check Out</a></li>
   </ul>
 
    <ul class="nav navbar-nav navbar-right">
-              <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-          </ul>
-      </div>
+      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+   </ul>
+    </div>
 </nav>
+	
+	<div class="container" style="margin-top:50px">
 
 </body>
 </html>

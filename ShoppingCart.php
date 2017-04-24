@@ -60,15 +60,14 @@ background-color:#4CAF50;
   	<li><a href="Checkout.php">Check Out</a></li>
   </ul>
 
-   <ul class="nav navbar-nav navbar-right">
-      <li><a href="GrocerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="GrocerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+<ul class="nav navbar-nav navbar-right">
+      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
    </ul>
     </div>
 </nav>
-
-
-<div class = "container">
+	
+	<div class="container" style="margin-top:50px">
 
 
 <?php

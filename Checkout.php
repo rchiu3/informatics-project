@@ -62,11 +62,13 @@ background-color:#4CAF50;
   </ul>
 
    <ul class="nav navbar-nav navbar-right">
-      <li><a href="GrocerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="GrocerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
    </ul>
     </div>
 </nav>
+	
+	<div class="container" style="margin-top:50px">
 
 <?php
 //include config.php and dbutils.php

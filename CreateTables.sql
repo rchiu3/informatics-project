@@ -12,16 +12,13 @@ DROP TABLE IF EXISTS Payment;
 
 CREATE TABLE Customer (
 	CustomerID int unsigned NOT NULL AUTO_INCREMENT,
-	CustomerName varchar(30) NOT NULL,
-	Address varchar(200) NOT NULL,
-	Email varchar(60) NOT NULL,
+	CutomerName varchar(30) NOT NULL,
+	CustomerAddress varchar(200) NOT NULL,
+	CustomerEmail varchar(60) NOT NULL,
 	Username varchar(30),
-	HashedPass varchar(130),
+	CustomerPass varchar(130) NOT NULL,
 	PRIMARY KEY (CustomerID)
 );
-
-INSERT INTO Customer(CustomerName, Address, Email) VALUES ('Rudy Chiu', '123 Main Street', 'rudy-chiu@uiowa.edu');
-INSERT INTO Customer(CustomerName, Address, Email) VALUES ('Leo Perenzuela', '456 Main Street', 'leo-perezeula@uiowa.edu');
 	
 	-- Should we include payment info in customer table if so what is needed? --
 	-- Credit Card Number, Name on Card, Billing Address, CSV, Expiration Date, Card Type --
@@ -34,14 +31,11 @@ CREATE TABLE Order_T (
     Paid BOOLEAN,
     CustomerID int unsigned NOT NULL,
     DeliveryDate DATE NOT NULL,
-    DeliveryAddress varchar(150) NOT NULL,
+    DeliveryAddress varchar (150) NOT NULL,
     OrderStatus varchar(50),
     PRIMARY KEY (OrderID),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
-
-INSERT INTO Order_T(OrderDate, Paid, CustomerID, DeliveryDate, DeliveryAddress, OrderStatus) VALUES ('2017-4-15', 1, 1, '2017-4-18', '123 Main Street', 'Out For Delivery');
-INSERT INTO Order_T(OrderDate, Paid, CustomerID, DeliveryDate, DeliveryAddress, OrderStatus) VALUES ('2017-4-16', 1, 2, '2017-4-19', '456 Main Street', 'Processing');
 
 -- Store Table --
 
@@ -122,14 +116,6 @@ CREATE TABLE OrderLine (
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (3, 1, 4);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (2, 1, 2);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (1, 1, 7);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (2, 1, 1);
-
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (1, 2, 3);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (3, 2, 6);
-
 -- Employee Table --
 
 CREATE TABLE Employee (
@@ -137,7 +123,6 @@ CREATE TABLE Employee (
     EmployeeName varchar(50) NOT NULL,
     EmployeeAdmin BOOLEAN NOT NULL,
     EmployeeEmail varchar(100) NOT NULL,
-    EmployeeUser varchar(100) NOT NULL,
     EmployeePass varchar(300) NOT NULL,
     StoreID int unsigned NOT NULL,
     PRIMARY KEY (EmployeeID),
@@ -155,6 +140,7 @@ CREATE TABLE Payment (
 	CSV int(10) NOT NULL,
 	ExpirationDate varchar(10) NOT NULL,
 	CardType varchar(20) NOT NULL,
-	PRIMARY KEY (PaymentID)
+	PRIMARY KEY (PaymentID),
 	
 );
+	
