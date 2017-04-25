@@ -8,6 +8,13 @@
     }
     
     $StoreName = $_SESSION['StoreName'];
+    $Admin = $_SESSION['Admin'];
+	
+	if (!$Admin) {
+		header('Location: GrocerHome.php');
+		exit;
+	}
+    
     
 ?>
 
@@ -29,7 +36,7 @@
         // process the deletion (if selected) if the form below was submitted        
         
         // get data from form
-        $ProductID = $_POST['ProductID'];
+        $EmployeeID = $_POST['EmployeeID'];
         $delete = $_POST['delete'];
         
         if ($delete == 'yes') {
@@ -39,14 +46,14 @@
             $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
             
             // query to delete product
-            $query = "DELETE FROM Product WHERE ProductID = $ProductID;";
+            $query = "DELETE FROM Employee WHERE EmployeeID = $EmployeeID;";
             
             // run the delete statement to remove product from product table
             queryDB($query, $db);
         }
         
-        // send user back to pizza.php and exit 
-        header('Location: ProductInput.php');
+        // send user back to EmployeeInput.php and exit 
+        header('Location: EmployeeInput.php');
         exit;
     }
     
@@ -56,11 +63,11 @@
      * Check if a GET variable was passed with the id for the pizza
      *
      */
-    if(!isset($_GET['ProductID'])) {
+    if(!isset($_GET['EmployeeID'])) {
         // if the id was not passed through the url
         
         // send them out to pizza.php and stop executing code in this page
-        header('Location: ProductInput.php');
+        header('Location: EmployeeInput.php');
         exit;
     }
     
@@ -72,8 +79,8 @@
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     
     // set up a query
-    $ProductID = $_GET['ProductID'];
-    $query = "SELECT * FROM Product WHERE ProductID=$ProductID;";
+    $EmployeeID = $_GET['EmployeeID'];
+    $query = "SELECT * FROM Employee WHERE EmployeeID=$EmployeeID;";
     
     // run the query
     $result = queryDB($query, $db);
@@ -81,7 +88,7 @@
     // if the id is not in the pizza table, then we need to send the user back to pizza.php
     if (nTuples($result) == 0) {
         // send them out to pizza.php and stop executing code in this page
-        header('Location: ProductInput.php');
+        header('Location: EmployeeInput.php');
         exit;
     }
     
@@ -89,10 +96,10 @@
      * Now we know we got a valid product id through the GET variable
      */
     
-    // get some data from the Product table to ask a better question when confirming deletion
+    // get some data from the Employee table to ask a better question when confirming deletion
     $row = nextTuple($result);
     
-    $ProductName = $row['ProductName'];    
+    $EmployeeName = $row['EmployeeName'];    
 ?>
 
 <html>
@@ -108,7 +115,7 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
         
-        <title>Delete <?php echo $ProductName; ?>?</title>
+        <title>Delete <?php echo $EmployeeName; ?>?</title>
     </head>
     <body>
     
@@ -116,7 +123,7 @@
 
 //Set current page to echo class=active in navbar
 
-$page = 'ProductInput';
+$page = 'EmployeeInput';
 include_once('GrocerNav.php');
 
 ?>
@@ -126,14 +133,14 @@ include_once('GrocerNav.php');
 <!-- Visible title -->
 <div class="row">
     <div class="col-xs-12">
-        <h1>Do you want to delete <?php echo $ProductName; ?>?</h1>
+        <h1>Do you want to delete <?php echo $EmployeeName; ?>?</h1>
     </div>
 </div>
 
 <!-- form to ask users to confim deletion -->
 <div class="row">
     <div class="col-xs-12">
-<form action="DeleteProduct.php" method="post">
+<form action="DeleteEmployee.php" method="post">
     <div class="radio">
         <label>
             <input type="radio" name="delete" value="yes" checked>
@@ -147,7 +154,7 @@ include_once('GrocerNav.php');
         </label>
     </div>
     
-    <input type="hidden" name="ProductID" value="<?php echo $ProductID; ?>"/>
+    <input type="hidden" name="EmployeeID" value="<?php echo $EmployeeID; ?>"/>
     
     <button type="submit" class="btn btn-default" name="submit">Submit</button>
 </form>

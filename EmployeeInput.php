@@ -3,13 +3,29 @@
 <?php
     include_once('config.php');
     include_once('dbutils.php');
+
+//Kick users if they are not logged in
+    session_start();
+    if (!isset($_SESSION['EmployeeEmail'])) {
+        header('Location: GrocerLogin.php');
+        exit;
+    }
     
+    $StoreName = $_SESSION['StoreName'];
+	$StoreID = $_SESSION['StoreID'];
+	$Admin = $_SESSION['Admin'];
+	
+	if (!$Admin) {
+		header('Location: GrocerHome.php');
+		exit;
+	}
+
 ?>
 
 <html>
     <head>
 
-<title>Create Account</title>
+<title>Add Employee</title>
 
 <!-- This is the code from bootstrap -->        
 <!-- Latest compiled and minified CSS -->
@@ -29,7 +45,7 @@
 
 //Set current page to echo class=active in navbar
 
-$page = 'GrocerInput';
+$page = 'EmployeeInput';
 include_once('GrocerNav.php');
 
 ?>
@@ -39,7 +55,7 @@ include_once('GrocerNav.php');
 <!-- Visible title -->
         <div class="row">
             <div class="col-xs-12">
-                <h1>Create Account</h1>
+                <h1>Add Employees</h1>
             </div>
         </div>
         
@@ -55,13 +71,12 @@ if (isset($_POST['submit'])) {
     // only run if the form was submitted
     
     // get data from form
-    $EmployeeEmail = $_POST['EmployeeEmail'];
-	$EmployeeUser = $_POST['EmployeeUser'];
+	$EmployeeEmail = $_POST['EmployeeEmail'];
+    $EmployeeUser = $_POST['EmployeeUser'];
 	$EmployeePass = $_POST['EmployeePass'];
 	$EmployeePass2 = $_POST['EmployeePass2'];
     $EmployeeAdmin = $_POST['EmployeeAdmin'];
     $EmployeeName = $_POST['EmployeeName'];
-    $StoreName = $_POST['StoreName'];
     
    // connect to the database
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);    
@@ -70,15 +85,15 @@ if (isset($_POST['submit'])) {
     $isComplete = true;
     $errorMessage = "";
     
-    if (!$EmployeeEmail) {
-        $errorMessage .= " Please enter an email.";
+	if (!$EmployeeEmail) {
+        $errorMessage .= " Please enter an email for the employee.";
         $isComplete = false;
     } else {
         $EmployeeEmail = makeStringSafe($db, $EmployeeEmail);
     }
 	
-	if (!$EmployeeUser) {
-        $errorMessage .= " Please enter a username.";
+    if (!$EmployeeUser) {
+        $errorMessage .= " Please enter a username for the employee.";
         $isComplete = false;
     } else {
         $EmployeeUser = makeStringSafe($db, $EmployeeUser);
@@ -102,74 +117,29 @@ if (isset($_POST['submit'])) {
     if (!$EmployeeName) {
         $errorMessage .= " Please enter your name.";
         $isComplete = false;
-    }
-    
-    if (!$EmployeeAdmin) {
-        $errorMessage .= " Please indicate whether or not this employee is an admin.";
-        $isComplete = false;
-    }
-	    
+    }   
 	
     if ($isComplete) {
     
 		// Check for existing user with same email
-		$query = "SELECT EmployeeEmail FROM Employee WHERE EmployeeEmail = '" . $EmployeeEmail . "';";
+		$query = "SELECT EmployeeUser FROM Employee WHERE EmployeeUser = '" . $EmployeeUser . "';";
 		$result = queryDB($query, $db);
 		if (nTuples($result) == 0) {
+			
+			// generate the hashed version of the password
+			$hashedpass = crypt($EmployeePass, getSalt());
+			
+			// SQL to insert record
+			$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeeUser, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "','" . $EmployeeEmail . "', '" . $EmployeeUser . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
 		
-			// Check for existing store
-			$query = 'SELECT StoreID FROM Store WHERE StoreName LIKE "' . $StoreName . '";';
-			$result = queryDB($query, $db);
-			if (nTuples($result) == 0) {
-				
-				// add store into store table
-				$query = 'INSERT INTO Store(StoreName) VALUES ("' . $StoreName . '");';
-				$result = queryDB($query, $db);
-				
-				// get store id for newly added store
-				$query = 'SELECT StoreID FROM Store WHERE StoreName LIKE "' . $StoreName . '";';
-				$result = queryDB($query, $db);
-				
-				while($row = nextTuple($result)) {
-					$StoreID = $row['StoreID'];
-				}
-				
-				// generate the hashed version of the password
-				$hashedpass = crypt($EmployeePass, getSalt());
-				
-				// SQL to insert record
-				$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeeUser, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "', '" . $EmployeeEmail . "', '" . $EmployeeUser . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
+			// run the insert statement
+			$result = queryDB($insert, $db);
 			
-				// run the insert statement
-				$result = queryDB($insert, $db);
-				
-				// we have successfully inserted the record
-				echo ("Successfully created account " . $EmployeeUser);
-			}
-			else {
-				$query = 'SELECT StoreID FROM Store WHERE StoreName LIKE "' . $StoreName . '";';
-				$result = queryDB($query, $db);
-				
-				while($row = nextTuple($result)) {
-					$StoreID = $row['StoreID'];
-				}
-				
-				// generate the hashed version of the password
-				$hashedpass = crypt($EmployeePass, getSalt());
-				
-				// SQL to insert record
-				$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeeUser, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "', '" . $EmployeeEmail . "', '" . $EmployeeUser . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
-			
-				// run the insert statement
-				$result = queryDB($insert, $db);
-				
-				// we have successfully inserted the record
-				echo ("Successfully created account " . $EmployeeUser);
-			}
-		}
-		else {
+			// we have successfully inserted the record
+			echo ("Successfully entered " . $EmployeeName . " into the database.");
+		} else {
 			$isComplete = false;
-			$errorMessage = "Sorry. We already have a user registered with the email " . $EmployeeEmail;
+			$errorMessage = "Sorry. We already have a user account under the username: " . $EmployeeUser;
 		}
 	}
 }
@@ -195,7 +165,7 @@ if (isset($_POST['submit'])) {
         <div class="row">
             <div class="col-xs-12">
                 
-<form action="GrocerInput.php" method="post">
+<form action="EmployeeInput.php" method="post">
 	
 <!-- name -->
 	<div class="form-group">
@@ -208,7 +178,7 @@ if (isset($_POST['submit'])) {
         <label for="EmployeeEmail">Email</label>
         <input type="email" class="form-control" name="EmployeeEmail"/>
     </div>
-	
+
 <!-- username -->
     <div class="form-group">
         <label for="EmployeeUser">Username</label>
@@ -227,13 +197,6 @@ if (isset($_POST['submit'])) {
         <input type="password" class="form-control" name="EmployeePass2"/>
     </div>
 	
-<!-- store -->
-<div class = "form-group">
-    <label for="StoreName">Store Name:</label>
-    <input type="name" class="form-control" name="StoreName"/>
-</div>
-
-	
 <!-- admin -->
 	<div class="form-group">
 		<label for="EmployeeAdmin">Is this user an admin?:</label>
@@ -245,20 +208,56 @@ if (isset($_POST['submit'])) {
     </label>    
 	</div>
     
-    <button type="submit" class="btn btn-default" name="submit">Create Account</button>
+    <button type="submit" class="btn btn-default" name="submit">Add Employee</button>
 </form>
-
-<div class="row">
-	<div class="col-xs-12">
-		<p>Already have an account? <a href = "GrocerLogin.php">Click here to login</a></p>
-	</div>
-</div>
                 
             </div>
         </div>
       
+<!-- HTML Table to display data -->
+<div class = "row">
+    <div class = "col-xs-12">
+        <table class = "table table-hover">
+            <thead>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Admin?</th>
+                <th></th>
+                <th></th>
+            </thead>
+            
+<!-- Use php to display data -->
+<?php
+    
+//query to find information about employees from database
+$query = 'SELECT EmployeeID, EmployeeName, EmployeeEmail, EmployeeUser, EmployeeAdmin FROM Employee WHERE StoreID = ' . $StoreID . ';';
 
+$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+    
+$result = queryDB($query, $db);
+    
+while($row = nextTuple($result)) {
+    echo "\n <tr>";
+    echo "<td>" . $row['EmployeeName'] . "</td>";
+    echo "<td>" . $row['EmployeeEmail'] . "</td>";
+    echo "<td>" . $row['EmployeeUser'] . "</td>";
+	if ($row['EmployeeAdmin']) {
+            $EmployeeAdmin = 'Yes';
+        } else {
+            $EmployeeAdmin = 'No';
+        }
+    echo "<td>" . $EmployeeAdmin . "</td>";
+    echo "<td><a href='UpdateEmployee.php?EmployeeID=" . $row['EmployeeID'] . "'>edit</a></td>";
+    echo "<td><a href='DeleteEmployee.php?EmployeeID=" . $row['EmployeeID'] . "'>delete</a></td>";
+    echo "</tr> \n";
+    }
+?>
+        </table>
+    </div>
+</div>
+</div>
         
     </body>
     
-</html>
+</html>s

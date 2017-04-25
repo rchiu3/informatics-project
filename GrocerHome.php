@@ -1,3 +1,11 @@
+<?php
+
+//Echo store name if user is logged in
+    session_start();
+    $StoreName = $_SESSION['StoreName'];
+    
+?>
+
 <html>
     <head>
 <!-- Latest compiled and minified CSS -->
@@ -12,26 +20,68 @@
         <title>Store Overview</title>
     </head>
 
-<!-- Navbar -->
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Store Overview</a>
-        </div>
+<?php
+
+//Set current page to echo class=active in navbar
+
+$page = 'GrocerHome';
+include_once('GrocerNav.php');
+
+?>
+
+<body>
+    <div class='container' style='margin-top:50px'>
+
+<h1>Grocer Home</h1>
+     
+<div class='row'>
+    <div class='col-xs-12'>
+        <p>Welcome to the grocer homepage! Please <a href='GrocerLogin.php'>login</a> or <a href='GrocerInput.php'>create an account</a>
+            to access other grocer functions.</p>
+        <p>As a regular employee without administrator permissions, you'll be able to view orders that are submitted by customers.
+        You'll be able to view the customer information as well as updating the order status. </p>
         
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="GrocerHome.php">Home</a></li>
-            <li><a href="ProductInput.php">Product Input</a></li>
-            <li><a href="CategoryInput.php">Category Input</a></li>
-            <li><a href="#">Orders</a></li>
-            <li><a href="#">Employees</a></li>
-        </ul>
-        
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        </ul>
+        <p>If you have administrative permissions, you have the same abilities as a regular employee in addition to being able to add, edit, or
+        remove existing employees from your store's records.</p>
     </div>
-</nav>
+</div>
+
+<h2>Grocer Tools</h2>
+
+<div class='row'>
+    <div class='col-xs-12'>
+        <a href='ProductInput.php'>Product Input</a>
+        <p>On the product input page, you can add products to your stores inventory. Here you can also update the prices and inventory in stock.
+        As customers purchase your products, the inventory will automatically subtract the quantity purchased after the order is filled. At the
+        bottom of the page, you can view all of the existing products you have in your store.</p>
+    </div>
+</div>
+
+<div class='row'>
+    <div class='col-xs-12'>
+        <a href='CategoryInput.php'>Category Input</a>
+        <p>On the category input page you can add categories of products if you don't see it in the product input page. Having descriptive categories
+        will help your customers find items while shopping online.</p>
+    </div>
+</div>
+
+<div class='row'>
+    <div class='col-xs-12'>
+        <a href='GrocerOrders.php'>Orders</a>
+        <p>On the main order page, you will see all the unfinished orders at the top. At the bottom, there is a list of all fulfilled orders.
+        For each order, you can see the details and update the orders status as it's filled, sent out for delivery, and delivered.</p>
+    </div>
+</div>
+
+<div class='row'>
+    <div class='col-xs-12'>
+        <a href='EmployeeInput.php'>Employees</a>
+        <p>This page is only accessible to administrators of your store. Here you can view add new employees and edit or delete existing ones.
+        For new employees, just set a default password for them and they will be asked to change it upon their first login.</p>
+    </div>
+</div>
+        
+    </div>
+</body>
     
 </html>

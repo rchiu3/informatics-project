@@ -1,3 +1,17 @@
+<?php
+
+//Kick users if they are not logged in
+    session_start();
+    if (!isset($_SESSION['EmployeeEmail'])) {
+        header('Location: GrocerLogin.php');
+        exit;
+    }
+    
+    $StoreName = $_SESSION['StoreName'];
+    $StoreID = $_SESSION['StoreID'];
+    
+?>
+
 <html>
     <head>
 <!-- Latest compiled and minified CSS -->
@@ -9,31 +23,18 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         
-        <title>Product Input</title>
+    <title>Product Input</title>
     </head>
     <body>
-    
-<!-- Navbar -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Store Overview</a>
-        </div>
-        
-        <ul class="nav navbar-nav">
-            <li><a href="GrocerHome.php">Home</a></li>
-            <li class="active"><a href="ProductInput.php">Product Input</a></li>
-            <li><a href="CategoryInput.php">Category Input</a></li>
-            <li><a href="#">Orders</a></li>
-            <li><a href="#">Employees</a></li>
-        </ul>
-        
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="GrocerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-            <li><a href="GrocerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-        </ul>
-    </div>
-</nav>
+
+<?php
+
+//Set current page to echo class=active in navbar
+
+$page = 'ProductInput';
+include_once('GrocerNav.php');
+
+?>
 
 <div class = "container" style = "margin-top:50px">
         
@@ -50,12 +51,11 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 //Check to see if Save button at the end of the form was clicked
 if(isset($_POST['submit'])) {
     
-    $ProductID = $_Post['ProductID'];
+    $ProductID = $_POST['ProductID'];
     $CategoryID = $_POST['Category-CategoryID'];
     $Price = $_POST['Price'];
     $ProductName = $_POST['ProductName'];
     $Inventory = $_POST['Inventory'];
-    $StoreID = 1;
     
     //Check to see if form is complete, if not, display an error message
     $isComplete = true;
@@ -83,6 +83,26 @@ if(isset($_POST['submit'])) {
     
     //run the insert statement
     $result = queryDB($query, $db);
+    
+    //get ProductID of product that was just entered
+    $ProductID = mysqli_insert_id($db);
+    
+    //check if user uploaded a picture
+    if ($_FILES['Picture']['size'] > 0) {
+        
+        $tmpName = $_FILES['Picture']['tmp_name'];
+        $fileName = $_FILES['Picture']['name'];
+        
+        $newFileName = $imagesDir . $ProductID . $fileName;
+        
+        if (move_uploaded_file($tmpName, $newFileName)) {
+            $query = "UPDATE Product SET Picture = '$newFileName' WHERE ProductID = " . $ProductID . ";";
+            queryDB($query,$db);
+        }
+        else {
+            echo "Error copying image";
+        }
+    }
     
     // Inform user that insert statement was successfully executed
     if ($isComplete) {
@@ -136,8 +156,14 @@ if(isset($_POST['submit'])) {
 
 <!-- Inventory -->
 <div class = "form-group">
-    <label for = "trim">Quantity in Stock:</label>
+    <label for = "Inventory">Quantity in Stock:</label>
     <input type = "text" class = "form-control" name = "Inventory"/>
+</div>
+
+<!-- Picture -->
+<div class = "form-group">
+    <label for = "Picture">Product Picture:</label>
+    <input type = "file" class = "form-control" name = "Picture"/>
 </div>
 
 <button type = "submit" class = "btn btn-default" name = "submit">Save</button>
@@ -157,13 +183,14 @@ if(isset($_POST['submit'])) {
                 <th>Quantity in Stock</th>
                 <th></th>
                 <th></th>
+                <th></th>
             </thead>
             
 <!-- Use php to display data -->
 <?php
     
-//query to find information about cars from database
-$query = 'SELECT P.ProductID, P.ProductName, P.Price, P.Inventory, P.Picture, C.CategoryName FROM Product P, Category C WHERE P.CategoryID = C.CategoryID;';
+//query to find information about products from database
+$query = 'SELECT P.ProductID, P.ProductName, P.Price, P.Inventory, P.Picture, C.CategoryName FROM Product P, Category C WHERE P.CategoryID = C.CategoryID AND P.StoreID = ' . $StoreID . ';';
     
 $result = queryDB($query, $db);
     
@@ -171,8 +198,16 @@ while($row = nextTuple($result)) {
     echo "\n <tr>";
     echo "<td>" . $row['CategoryName'] . "</td>";
     echo "<td>" . $row['ProductName'] . "</td>";
-    echo "<td>" . $row['Price'] . "</td>";
+    echo "<td>$" . $row['Price'] . "</td>";
     echo "<td>" . $row['Inventory'] . "</td>";
+    // picture
+    echo "<td>";
+    if ($row['Picture']) {
+        $imageLocation = $row['Picture'];
+        $altText = $row['ProductName'];
+        echo "<img src='$imageLocation' width='150' alt='$altText'>";
+    }
+    echo "</td>";
     echo "<td><a href='UpdateProduct.php?ProductID=" . $row['ProductID'] . "'>edit</a></td>";
     echo "<td><a href='DeleteProduct.php?ProductID=" . $row['ProductID'] . "'>delete</a></td>";
     echo "</tr> \n";

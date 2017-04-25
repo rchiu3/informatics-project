@@ -1,4 +1,15 @@
 <?php
+
+//Kick users if they are not logged in
+    session_start();
+    if (!isset($_SESSION['EmployeeEmail'])) {
+        header('Location: GrocerLogin.php');
+        exit;
+    }
+    
+    $StoreName = $_SESSION['StoreName'];
+    $StoreID = $_SESSION['StoreID'];
+
 /*
  * This php file enables users to edit a particular product
  * It obtains the id for the product to update from an id variable passed using the GET method (in the url)
@@ -28,7 +39,6 @@
         $Price = $_POST['Price'];
         $ProductName = $_POST['ProductName'];
         $Inventory = $_POST['Inventory'];
-        $StoreID = 1;
         
         // variable to keep track if the form is complete (set to false if there are any issues with data)
         $isComplete = true;
@@ -62,7 +72,6 @@
             // put together SQL statement to update the product
             $query = "UPDATE Product SET CategoryID=$CategoryID, Price=$Price, ProductName='$ProductName', Inventory=$Inventory WHERE ProductID=$ProductID;";
             
-            echo "Query: $query";
             // connect to the database
             $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
             
@@ -123,11 +132,9 @@
         $Price = $row['Price'];
         $ProductName = $row['ProductName'];
         $Inventory = $row['Inventory'];
-        $StoreID = 1;
         
         }
 ?>
-
 
 <html>
     <head>
@@ -146,27 +153,14 @@
     </head>
     <body>
     
-<!-- Navbar -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Store Overview</a>
-        </div>
-        
-        <ul class="nav navbar-nav">
-            <li><a href="GrocerHome.php">Home</a></li>
-            <li class="active"><a href="ProductInput.php">Product Input</a></li>
-            <li><a href="CategoryInput.php">Category Input</a></li>
-            <li><a href="#">Orders</a></li>
-            <li><a href="#">Employees</a></li>
-        </ul>
-        
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        </ul>
-    </div>
-</nav>
+<?php
+
+//Set current page to echo class=active in navbar
+
+$page = 'ProductInput';
+include_once('GrocerNav.php');
+
+?>
 
     <div class = "container" style = "margin-top:50px">
        

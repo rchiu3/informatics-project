@@ -1,3 +1,16 @@
+<?php
+
+//Kick users if they are not logged in
+    session_start();
+    if (!isset($_SESSION['EmployeeEmail'])) {
+        header('Location: GrocerLogin.php');
+        exit;
+    }
+    
+    $StoreName = $_SESSION['StoreName'];
+    
+?>
+
 <html>
     <head>
 <!-- Latest compiled and minified CSS -->
@@ -14,27 +27,14 @@
     
     <body>
         
-        <!-- Navbar -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Store Overview</a>
-        </div>
-        
-        <ul class="nav navbar-nav">
-            <li><a href="GrocerHome.php">Home</a></li>
-            <li><a href="ProductInput.php">Product Input</a></li>
-            <li class="active"><a href="CategoryInput.php">Category Input</a></li>
-            <li><a href="#">Orders</a></li>
-            <li><a href="#">Employees</a></li>
-        </ul>
-        
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        </ul>
-    </div>
-</nav>
+<?php
+
+//Set current page to echo class=active in navbar
+
+$page = 'CategoryInput';
+include_once('GrocerNav.php');
+
+?>
         
         <div class = "container" style = "margin-top:50px">
         

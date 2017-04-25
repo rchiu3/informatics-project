@@ -23,27 +23,14 @@
     
     <body>
         
-<!-- Navbar -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Store Overview</a>
-        </div>
-        
-        <ul class="nav navbar-nav">
-            <li><a href="GrocerHome.php">Home</a></li>
-            <li><a href="ProductInput.php">Product Input</a></li>
-            <li><a href="CategoryInput.php">Category Input</a></li>
-            <li><a href="#">Orders</a></li>
-            <li><a href="#">Employees</a></li>
-        </ul>
-        
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-            <li class="active"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        </ul>
-    </div>
-</nav>
+<?php
+
+//Set current page to echo class=active in navbar
+
+$page = 'GrocerLogin';
+include_once('GrocerNav.php');
+
+?>
 
     <div class = "container" style = "margin-top:50px">
 
@@ -93,7 +80,7 @@ if (isset($_POST['submit'])) {
     }
     
     // get the hashed password from the user with the email that got entered
-    $query = "SELECT EmployeeEmail, EmployeePass, StoreName FROM Employee E, Store S WHERE S.StoreID = E.StoreID AND EmployeeEmail='" . $EmployeeEmail . "';";
+    $query = "SELECT E.EmployeeEmail, E.EmployeePass, S.StoreName, S.StoreID, E.EmployeeAdmin FROM Employee E, Store S WHERE S.StoreID = E.StoreID AND EmployeeEmail='" . $EmployeeEmail . "';";
     $result = queryDB($query, $db);
     if (nTuples($result) > 0) {
         // there is an account that corresponds to the email that the user entered
@@ -101,6 +88,8 @@ if (isset($_POST['submit'])) {
 		$row = nextTuple($result);
 		$hashedpass = $row['EmployeePass'];
 		$StoreName = $row['StoreName'];
+		$StoreID = $row['StoreID'];
+		$Admin = $row['EmployeeAdmin'];
 		
 		// compare entered password to the password on the database
 		if ($hashedpass == crypt($EmployeePass, $hashedpass)) {
@@ -110,7 +99,9 @@ if (isset($_POST['submit'])) {
 			if (session_start()) {
 				$_SESSION['EmployeeEmail'] = $EmployeeEmail;
 				$_SESSION['StoreName'] = $StoreName;
-				header('Location: ProductInput.php');
+				$_SESSION['StoreID'] = $StoreID;
+				$_SESSION['Admin'] = $Admin;
+				header('Location: GrocerHome.php');
 				exit;
 			} else {
 				// if we can't start a session
