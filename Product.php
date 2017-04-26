@@ -1,16 +1,19 @@
 <?php
-//
-$StoreID = $_GET['StoreID'];
+
+session_start();
+$StoreID = $_SESSION['StoreID'];
+$CustomerEmail = $_SESSION['CustomerEmail'];
+$CustomerID = $_SESSION['CustomerID'];
+$OrderID = $_SESSION['OrderID'];
+
+//send user back to customer home if they don't have a grocer selected
 if (!isset($StoreID))
 {
 	header ('Location: CustomerHome.php');
 	exit;
 }
-session_start();
-$CustomerEmail = $_SESSION['CustomerEmail'];
-//$StoreID = $_GET['StoreID'];
-//$CustomerID = $_SESSION['CustomerID'];
-//$OrderID = $_SESSION['OrderID'];
+
+//set page to echo active page in navbar
 $page = 'Product';
 include_once('CustomerNav.php');
 ?>
@@ -109,7 +112,7 @@ if(isset($_Post['add']))
 	}
 	else
 	{
-		if(isset($_SESSION['OrderID']
+		if(isset($_SESSION['OrderID']))
 		{
 			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
 			$result = queryDB($query, $db);
@@ -152,7 +155,7 @@ if(isset($_Post['add']))
 //***** STILL Need to group by Category *****
 // And Still unclear how we want this page to be shown.
 
-$query = "SELECT ProductName, Price, Picture FROM Product WHERE StoreID = " . $StoreID . " ORDER BY ProductName ;";
+$query = "SELECT ProductID, ProductName, Price, Picture FROM Product WHERE StoreID = " . $StoreID . " ORDER BY ProductName ;";
 
 $result = queryDB($query, $db);
 
@@ -169,12 +172,15 @@ while($row = nextTuple($result))
         echo "<img src='$imageLocation' width='150' alt='$altText'>";
     }
     echo "</td>";
-	echo '<td><form action = "Product.php" method = "post">';
+	echo '<td><form action = "AddToCart.php" method = "post">';
     echo '<div class = "form-group">';
     echo '<label for = "Quantity">Quantity</label><input type = "number" class = "form-control" name = "Quantity"/>';
     echo '</div></td>';
+	echo '<input type="hidden" name="ProductID" value="' . $row['ProductID'] . '"/>';
     echo '<td><button type = "add" class = "btn btn-default" name = "add">Add to Cart</button></td></tr>';
+	echo '</form>';
     }
+
 ?>
         </table>
     </div>

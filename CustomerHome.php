@@ -88,10 +88,7 @@ $result = queryDB($query, $db);
 while($row = nextTuple($result))
 {
 	echo "\n <tr>";
-    //echo "<td>" . $row['StoreName'] . "</td>";
-	echo "<td><a href='Product.php?StoreID=" . $row['StoreID'] . "'> " . $row['StoreName'] . "";
-    //echo '<input type= "hidden" name = "StoreID" value = ' . $row['StoreID'] . '/>';
-    //echo '<td><button type = "button" class = "btn btn-default" name = "Select">Select</button></td></tr>';
+	echo "<td><a href='SetStore.php?StoreID=" . $row['StoreID'] . "'> " . $row['StoreName'] . "";
 	echo "</tr> \n";
     }
 ?>

@@ -61,7 +61,7 @@ include_once('dbutils.php');
 //connect to database
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 ?>
-//<!-- HTML Table -->
+<!-- HTML Table -->
 <div class = "row">
     <div class = "col-xs-12">
         <table class = "table table-hover">
@@ -69,13 +69,14 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
                 <th>Shopping Cart</th>
             </thead>
 
-//<!-- Display  Shopping Cart data -->
+<!-- Display  Shopping Cart data -->
 
 <?php
 // SQL query to list products from shopping cart
 //***** STILL Need to group by Category *****
 // And Still unclear how we want this page to be shown.
-$query = 'SELECT o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture FROM Product p, OrderLine o WHERE p.ProductID = o.ProductID ;';
+//$OrderID 
+$query = 'SELECT o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture FROM Product p, OrderLine o WHERE p.ProductID = o.ProductID AND o.OrderID = ' . $OrderID . ';';
 
 $result = queryDB($query, $db);
 
@@ -85,7 +86,14 @@ while($row = nextTuple($result)) {
     echo "<td>" . $row['Quantity'] . "</td>";
     echo "<td>" . $row['ProductName'] . "</td>";
     echo "<td>" . $row['Price'] . "</td>";
-    echo "<td>" . $row['Picture'] . "</td>";
+   	// picture
+    echo "<td>";
+    if ($row['Picture']) {
+        $imageLocation = $row['Picture'];
+        $altText = $row['ProductName'];
+        echo "<img src='$imageLocation' width='150' alt='$altText'>";
+    }
+    echo "</td>";
     echo "</tr> \n";
 
     }
