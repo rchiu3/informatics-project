@@ -1,4 +1,10 @@
-<html>
+<?php
+	include_once('config.php');
+	include_once('dbutils.php');
+	$page = 'Checkout';
+	include_once('CustomerNav.php');
+	?>
+<<html>
     <head>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -46,28 +52,8 @@ background-color:#4CAF50;
 <title>Check Out</title>
 <body>
 
-<!-- Customer Navigation Bar -->
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Home</a>
-        </div>
 
-  <ul class="nav navbar-nav">
-  	<li><a href="CustomerHome.php">Home</a></li>
-  	<li><a href="Product.php">Products</a></li>
-  	<li><a href="CustomerLogin.php">Login</a></li>
-  	<li><a href="ShoppingCart.php">Shopping Cart</a></li>
-  	<li><a class="active" href="Checkout.php">Check Out</a></li>
-  </ul>
 
-   <ul class="nav navbar-nav navbar-right">
-      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-   </ul>
-    </div>
-</nav>
-	
 	<div class="container" style="margin-top:50px">
 
 <?php
@@ -76,7 +62,43 @@ include_once('config.php');
 include_once('dbutils.php');
 //connect to database
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+//session_start{};
+//$OrderID = $_SESSION['OrderID'];
+// We have to check if they have an order to view checkout page if not display your shopping cart is empty
 
+//If Logged in
+//if(isset($_SESSION['CustomerEmail'])
+//{
+
+	$query = "SELECT OrderID FROM Order_T WHERE CustomerID = " . $CustomerID .";";
+	$result = queryDB($query, $db);
+	while ($row = nextTuple($result))
+	{
+		$OrderID = $row['OrderID'];
+	}
+	$_SESSION['OrderID'] = $OrderID;
+	//Should this query Call to check O.OrderID=OLine.OrderID & P.PoductID = OLine.ProductID
+	$query = 'SELECT P.ProductID, P.ProductName, P.Price, P.Picture, O.Quantity, O.OrderID FROM Product P, OrderLine O WHERE P.ProductID = O.ProductID AND O.OrderID = ' . $OrderID . ';';
+	$result = queryDB($query, $db);
+	while($row = nextTuple($result))
+	{
+		echo "\n<tr>";
+		echo "<td>" . $row['ProductName'] . "</td>";
+		echo "<td>" . $row['Picture'] . "</td>";
+		echo "<td>" . $row['Price'] . "</td>";
+		echo "<td>" . $row['Quantity'] . "</td>";
+
+	}
+
+//}
+
+//If Guest
+
+
+//Start A Seeion Call the OrderId with session $orderID=$_Session....
+//use orderID to list important information from OrderLine
+//make query to total out
+//take payment information
 ?>
 
 

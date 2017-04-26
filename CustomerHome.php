@@ -1,3 +1,13 @@
+<?php
+//
+session_start();
+$CustomerEmail = $_SESSION['CustomerEmail'];
+//include config.php and dbutils.php
+include_once('config.php');
+include_once('dbutils.php');
+//connect to database
+$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+?>
 <html>
     <head>
 <!-- Latest compiled and minified CSS -->
@@ -45,30 +55,52 @@ background-color:#4CAF50;
 <title>Home</title>
 <body>
 
-<!-- Customer Navigation Bar -->
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Home</a>
-        </div>
 
-  <ul class="nav navbar-nav">
-  	<li><a class="active" href="CustomerHome.php">Home</a></li>
-  	<li><a href="Product.php">Products</a></li>
-  	<li><a href="CustomerLogin.php">Login</a></li>
-  	<li><a href="ShoppingCart.php">Shopping Cart</a></li>
-  	<li><a href="Checkout.php">Check Out</a></li>
-  </ul>
+<?php
+$page = 'CustomerHome';
+include_once('CustomerNav.php');
+?>
 
-   <ul class="nav navbar-nav navbar-right">
-      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-   </ul>
-    </div>
-</nav>
-	
 	<div class="container" style="margin-top:50px">
+	
+	
+	<div class = "row">
+    <div class = "col-xs-12">
+        <table class = "table table-hover">
+            <thead>
+                <th>Select A Grocer</th>
+				
+				
 
+            </thead>
+			
+
+<!-- Display  Product data -->
+
+<?php
+// SQL query to list products from database
+//***** STILL Need to group by Category *****
+// And Still unclear how we want this page to be shown.
+$query = "SELECT StoreName, StoreID FROM Store";
+
+$result = queryDB($query, $db);
+
+while($row = nextTuple($result))
+{
+	echo "\n <tr>";
+    //echo "<td>" . $row['StoreName'] . "</td>";
+	echo "<td><a href='Product.php?StoreID=" . $row['StoreID'] . "'> " . $row['StoreName'] . "";
+    //echo '<input type= "hidden" name = "StoreID" value = ' . $row['StoreID'] . '/>';
+    //echo '<td><button type = "button" class = "btn btn-default" name = "Select">Select</button></td></tr>';
+	echo "</tr> \n";
+    }
+?>
+        </table>
+    </div>
+</div>
+		
+
+	</div>
 </body>
 </html>
 

@@ -1,9 +1,11 @@
 <!-- This file allows Customers to make accounts -->
 
+
 <?php
     include_once('config.php');
     include_once('dbutils.php');
-    
+	$page = 'CustomerInput';
+	include_once('CustomerNav.php');
 ?>
 
 <html>
@@ -11,7 +13,7 @@
 .
 <title>Create Account</title>
 
-<!-- This is the code from bootstrap -->        
+<!-- This is the code from bootstrap -->
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -20,42 +22,21 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        
+
     </head>
-    
+
     <body>
-		
-<!-- Customer Navigation Bar -->
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Home</a>
-        </div>
 
-  <ul class="nav navbar-nav">
-  	<li><a href="CustomerHome.php">Home</a></li>
-  	<li><a href="Product.php">Products</a></li>
-  	<li><a class="active" href="CustomerLogin.php">Login</a></li>
-  	<li><a href="ShoppingCart.php">Shopping Cart</a></li>
-  	<li><a href="Checkout.php">Check Out</a></li>
-  </ul>
 
-   <ul class="nav navbar-nav navbar-right">
-      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-   </ul>
-    </div>
-</nav>
-	
 	<div class="container" style="margin-top:50px">
 
 <!-- Visible title -->
         <div class="row">
             <div class="col-xs-12">
-                <h1>Enter Users</h1>
+                <h1>Customer Sign Up</h1>
             </div>
         </div>
-        
+
 <!-- Processing form input -->
         <div class="row">
             <div class="col-xs-12">
@@ -66,21 +47,21 @@
 
 if (isset($_POST['submit'])) {
     // only run if the form was submitted
-    
+
     // get data from form
     $CustomerEmail = $_POST['CustomerEmail'];
 	$CustomerPass = $_POST['CustomerPass'];
 	$CustomerPass2 = $_POST['CustomerPass2'];
     $CustomerAddress = $_POST['CustomerAddress'];
     $CustomerName = $_POST['CustomerName'];
-    
+
    // connect to the database
-    $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);    
-    
+    $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+
     // check for required fields
     $isComplete = true;
     $errorMessage = "";
-    
+
     if (!$CustomerEmail) {
         $errorMessage .= " Please enter an email.";
         $isComplete = false;
@@ -92,45 +73,44 @@ if (isset($_POST['submit'])) {
         $errorMessage .= " Please enter a password.";
         $isComplete = false;
     }
-	
+
 	if (!$CustomerPass2) {
         $errorMessage .= " Please enter a password again.";
         $isComplete = false;
     }
-	
+
 	if ($CustomerPass != $CustomerPass2) {
 		$errorMessage .= " Your passwords do not match.";
 		$isComplete = false;
 	}
-    
+
     if (!$CustomerName) {
         $errorMessage .= " Please enter your name.";
         $isComplete = false;
     }
-    
+
     if (!$CustomerAddress) {
         $errorMessage .= " Please enter your address.";
         $isComplete = false;
     }
-	    
-	
+
+
     if ($isComplete) {
-    
+
 		// Check for existing customer with same email
 		$query = "SELECT CustomerEmail FROM Customer WHERE CustomerEmail = '" . $CustomerEmail . "';";
-		echo ($query);
 		$result = queryDB($query, $db);
 		if (nTuples($result) == 0) {
-			
+
 			// generate the hashed version of the password
 			$hashedpass = crypt($CustomerPass, getSalt());
-			
+
 			// SQL to insert record
 			$insert = "INSERT INTO Customer(CustomerName, CustomerEmail, CustomerPass, CustomerAddress) VALUES ('" . $CustomerName . "', '" . $CustomerEmail . "', '" . $hashedpass . "', '" . $CustomerAddress . "');";
-		
+
 			// run the insert statement
 			$result = queryDB($insert, $db);
-			
+
 			// we have successfully inserted the record
 			echo ("Successfully entered " . $CustomerEmail . " into the database.");
 		} else {
@@ -142,8 +122,8 @@ if (isset($_POST['submit'])) {
 ?>
             </div>
         </div>
-		
-		
+
+
 <!-- Showing errors -->
 <div class="row">
     <div class="col-xs-12">
@@ -153,16 +133,16 @@ if (isset($_POST['submit'])) {
         echo ($errorMessage);
         echo '</div>';
     }
-?>            
+?>
     </div>
 </div>
 
 <!-- Form for customer to input information -->
         <div class="row">
             <div class="col-xs-12">
-                
+
 <form action="CustomerInput.php" method="post">
-	
+
 <!-- name -->
 	<div class="form-group">
 		<label for="CustomerName">Name</label>
@@ -190,9 +170,9 @@ if (isset($_POST['submit'])) {
 <!-- address -->
     <div class="form-group">
         <label for="CustomerAddress">Address</label>
-        <input type="password" class="form-control" name="CustomerAddress"/>
+        <input type="address" class="form-control" name="CustomerAddress"/>
     </div>
-    
+
     <button type="submit" class="btn btn-default" name="submit">Create Account</button>
 </form>
 
@@ -201,12 +181,12 @@ if (isset($_POST['submit'])) {
 		<p>Already have an account? <a href = "CustomerLogin.php">Click here to login</a></p>
 	</div>
 </div>
-                
+
             </div>
         </div>
-      
 
-        
+
+
     </body>
-    
+
 </html>

@@ -1,3 +1,19 @@
+<?php
+//
+$StoreID = $_GET['StoreID'];
+if (!isset($StoreID))
+{
+	header ('Location: CustomerHome.php');
+	exit;
+}
+session_start();
+$CustomerEmail = $_SESSION['CustomerEmail'];
+//$StoreID = $_GET['StoreID'];
+//$CustomerID = $_SESSION['CustomerID'];
+//$OrderID = $_SESSION['OrderID'];
+$page = 'Product';
+include_once('CustomerNav.php');
+?>
 <html>
     <head>
 <!-- Latest compiled and minified CSS -->
@@ -41,68 +57,123 @@ background-color:#4CAF50;
 }
 </style>
 -->
-</head>
 <title>Products</title>
+</head>
+
 <body>
 
-<!-- Customer Navigation Bar -->
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Home</a>
-        </div>
 
-  <ul class="nav navbar-nav">
-  	<li><a href="CustomerHome.php">Home</a></li>
-  	<li><a class="active" href="Product.php">Products</a></li>
-  	<li><a href="CustomerLogin.php">Login</a></li>
-  	<li><a href="ShoppingCart.php">Shopping Cart</a></li>
-  	<li><a href="Checkout.php">Check Out</a></li>
-  </ul>
 
-   <ul class="nav navbar-nav navbar-right">
-      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-   </ul>
-    </div>
-</nav>
-	
 	<div class="container" style="margin-top:50px">
 
+<!-- What happens if a guests starts making an order and then leaves how do we find their OrderID since it won't be the last one created -->
 
 
 <?php
+
 //include config.php and dbutils.php
 include_once('config.php');
 include_once('dbutils.php');
 //connect to database
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+
+//Add to cart button is called 'add'
+/*
+if(isset($_Post['add']))
+{
+	if(isset($_SESSION['CustomerEmail']))
+	{
+		$query = "SELECT CustomerID, Paid FROM Order_T WHERE CustomerID = " . $CustomerID . " AND Paid = 0;";
+		$result = queryDB($query, $db);
+		if(nTuples($result) == 0)
+			{
+			$query = "INSERT INTO Order_T (StoreID, Paid, CustomerID) VALUES (" . $StoreID . ", 0, " . $CustomerID . ");";
+			$result = queryDB($query, $db);
+			$_SESSION['OrderID'] = mysqli_insert_id($db);
+			$OrderID = $_SESSION['OrderID'];
+			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
+			$result = queryDB($query, $db);
+			}
+		else
+		{
+			$query = "SELECT OrderID FROM Order_T WHERE CustomerID = " . $CustomerID ." AND Paid = 0;";
+			$result = queryDB($query, $db);
+			while ($row = nextTuple($result))
+			{
+				$OrderID = $row['OrderID'];
+			}
+			$_SESSION['OrderID'] = $OrderID;
+			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
+			$result = queryDB($query, $db);
+		}
+	}
+	else
+	{
+		if(isset($_SESSION['OrderID']
+		{
+			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
+			$result = queryDB($query, $db);
+		}
+		else
+		{
+			$query = "INSERT INTO Order_T (StoreID, Paid) VALUES (" . $StoreID . ", 0);";
+			$result = queryDB($query, $db);
+			$_SESSION['OrderID'] = mysqli_insert_id($db);
+			$OrderID = $_SESSION['OrderID'];
+			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
+			$result = queryDB ($query, $db);
+		}
+
+
+	}
+
+}
+*/
 ?>
 
 
 
-//<!-- HTML Table -->
+<!-- HTML Table -->
 <div class = "row">
     <div class = "col-xs-12">
         <table class = "table table-hover">
             <thead>
                 <th>Product Category</th>
-            </thead>
+				
+				
 
-//<!-- Display  Product data -->
+            </thead>
+			
+
+<!-- Display  Product data -->
 
 <?php
 // SQL query to list products from database
 //***** STILL Need to group by Category *****
 // And Still unclear how we want this page to be shown.
-$query = 'SELECT ProductName FROM Product ORDER BY ProductName;';
+
+$query = "SELECT ProductName, Price, Picture FROM Product WHERE StoreID = " . $StoreID . " ORDER BY ProductName ;";
 
 $result = queryDB($query, $db);
 
-while($row = nextTuple($result)) {
-    echo "\n <tr>";
+while($row = nextTuple($result))
+{
+    echo "<tr>";
     echo "<td>" . $row['ProductName'] . "</td>";
-    echo "</tr> \n";
+    echo "<td>" . $row['Price'] ."</td>";
+	// picture
+    echo "<td>";
+    if ($row['Picture']) {
+        $imageLocation = $row['Picture'];
+        $altText = $row['ProductName'];
+        echo "<img src='$imageLocation' width='150' alt='$altText'>";
+    }
+    echo "</td>";
+	echo '<td><form action = "Product.php" method = "post">';
+    echo '<div class = "form-group">';
+    echo '<label for = "Quantity">Quantity</label><input type = "number" class = "form-control" name = "Quantity"/>';
+    echo '</div></td>';
+    echo '<td><button type = "add" class = "btn btn-default" name = "add">Add to Cart</button></td></tr>';
     }
 ?>
         </table>

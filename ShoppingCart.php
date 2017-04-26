@@ -44,28 +44,12 @@ background-color:#4CAF50;
 </head>
 <title>Shopping Cart</title>
 <body>
+	<?php
+	$page = 'ShoppingCart';
+	include_once('CustomerNav.php');
+	?>
 
-<!-- Customer Navigation Bar -->
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Home</a>
-        </div>
-
-  <ul class="nav navbar-nav">
-  	<li><a href="CustomerHome.php">Home</a></li>
-  	<li><a href="Product.php">Products</a></li>
-  	<li><a href="CustomerLogin.php">Login</a></li>
-  	<li><a class="active" href="ShoppingCart.php">Shopping Cart</a></li>
-  	<li><a href="Checkout.php">Check Out</a></li>
-  </ul>
-
-<ul class="nav navbar-nav navbar-right">
-      <li><a href="CustomerLogin.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      <li><a href="CustomerInput.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-   </ul>
-    </div>
-</nav>
+<
 	
 	<div class="container" style="margin-top:50px">
 
@@ -91,7 +75,7 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 // SQL query to list products from shopping cart
 //***** STILL Need to group by Category *****
 // And Still unclear how we want this page to be shown.
-$query = 'SELECT o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture FROM Product p, OrderLine o WHERE p.ProductID = o.ProductID;';
+$query = 'SELECT o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture FROM Product p, OrderLine o WHERE p.ProductID = o.ProductID ;';
 
 $result = queryDB($query, $db);
 
