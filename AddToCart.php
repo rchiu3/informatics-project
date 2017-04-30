@@ -12,12 +12,11 @@ include_once('dbutils.php');
 //connect to database
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 
-if(isset($_Post['add']))
-
+if(isset($_POST['add']))
+{
 $Quantity = $_POST['Quantity'];
 $ProductID = $_POST['ProductID'];
 
-{
 	if(isset($_SESSION['CustomerEmail']))
 	{
 		$query = "SELECT CustomerID, Paid FROM Order_T WHERE CustomerID = " . $CustomerID . " AND Paid = 0;";

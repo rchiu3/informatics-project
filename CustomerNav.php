@@ -2,7 +2,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <h4 class="navbar-text"><?php if (!$CustomerEmail) {echo 'Guest';} else {echo $CustomerEmail;} ?></h4>
+            <h4 class="navbar-text"><?php if (!$CustomerID) {echo 'Guest';} else {echo $CustomerEmail;} ?></h4>
         </div>
         
         <ul class="nav navbar-nav">
@@ -10,7 +10,15 @@
             <li <?php if ($page === 'Product') {echo 'class="active"';} ?>><a href="Product.php">Products</a></li>
             <li <?php if ($page === 'ShoppingCart') {echo 'class="active"';} ?>><a href="ShoppingCart.php">ShoppingCart</a></li>
             <li <?php if ($page === 'Checkout') {echo 'class="active"';} ?>><a href="Checkout.php">Check Out</a></li>
+            
         </ul>
+        
+        <form class ="navbar-form navbar-left" action = "Search.php" method ="post">
+            <div class"form-group">
+                <input type="text" class="form-control" placeholder="Search Products" name="ProductSearch">
+                <button type="submit" class = "btn btn-default" name="Search">Search</button>  
+            </div>
+        </form>
         
         <ul class="nav navbar-nav navbar-right">
             <?php

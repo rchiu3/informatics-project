@@ -16,7 +16,7 @@ CREATE TABLE Customer (
 	CustomerAddress varchar(200) NOT NULL,
 	CustomerEmail varchar(60) NOT NULL,
 	Username varchar(30),
-	CustomerPass varchar(130) NOT NULL,
+	CustomerPass varchar(130),
 	PRIMARY KEY (CustomerID)
 );
 
@@ -33,9 +33,9 @@ CREATE TABLE Order_T (
     StoreID int NOT NULL,
     OrderDate DATETIME DEFAULT NULL,
     Paid BOOLEAN,
-    CustomerID int unsigned NOT NULL,
-    DeliveryDate DATE NOT NULL,
-    DeliveryAddress varchar(150) NOT NULL,
+    CustomerID int unsigned,
+    DeliveryDate DATE,
+    DeliveryAddress varchar(150),
     OrderStatus varchar(50),
     PRIMARY KEY (OrderID),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)

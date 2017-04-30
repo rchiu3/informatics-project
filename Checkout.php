@@ -1,6 +1,11 @@
 <?php
 	include_once('config.php');
 	include_once('dbutils.php');
+	session_start();
+	$StoreID = $_SESSION['StoreID'];
+	$CustomerEmail = $_SESSION['CustomerEmail'];
+	$CustomerID = $_SESSION['CustomerID'];
+	$OrderID = $_SESSION['OrderID'];
 	$page = 'Checkout';
 	include_once('CustomerNav.php');
 	?>
@@ -55,8 +60,20 @@ background-color:#4CAF50;
 
 
 	<div class="container" style="margin-top:50px">
-
+<!-- HTML Table -->
+<div class = "row">
+    <div class = "col-xs-12">
+        <table class = "table table-hover">
+            <thead>
+                <th>Product Name</th>
+				<th>Quantity</th>
+				<th>Price</th>
+				<th></th>
+				<th></th>
+				<th></th>
+            </thead>
 <?php
+
 //include config.php and dbutils.php
 include_once('config.php');
 include_once('dbutils.php');
@@ -82,13 +99,22 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 	$result = queryDB($query, $db);
 	while($row = nextTuple($result))
 	{
-		echo "\n<tr>";
-		echo "<td>" . $row['ProductName'] . "</td>";
-		echo "<td>" . $row['Picture'] . "</td>";
-		echo "<td>" . $row['Price'] . "</td>";
-		echo "<td>" . $row['Quantity'] . "</td>";
-
+    echo "\n <tr>";
+    echo "<td>" . $row['ProductName'] . "</td>";
+    echo "<td>" . $row['Quantity'] . "</td>";
+    echo "<td>$" . $row['Price'] . "</td>";
+   	// picture
+    echo "<td>";
+    if ($row['Picture'])
+		{
+			$imageLocation = $row['Picture'];
+			$altText = $row['ProductName'];
+			echo "<img src='$imageLocation' width='150' alt='$altText'>";
+		}
+    echo "</td>";
+	echo "</tr> \n";
 	}
+	
 
 //}
 
@@ -102,7 +128,23 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 ?>
 
 
-
-
+</div>
+</div>
+</table>
+		
+<?php
+        
+        //Display total price with tax
+        
+        $query = 'SELECT CAST(SUM(X.Total) * 1.06 AS Decimal(10,2)) AS Final FROM (SELECT O.Quantity, P.Price, O.Quantity * P.Price AS Total FROM OrderLine O, Product P WHERE O.ProductID = P.ProductID AND O.OrderID =' . $OrderID . ') X;';
+        $result = queryDB($query, $db);
+        
+        while($row = nextTuple($result)) {
+            echo "<h3>Total With 6% Sales Tax:</h3>";
+            echo "<h4>$" . $row['Final'] . "</h4>";
+        }
+        
+?>		
+		
 </body>
 </html>

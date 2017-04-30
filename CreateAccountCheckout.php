@@ -4,6 +4,12 @@
 <?php
     include_once('config.php');
     include_once('dbutils.php');
+    
+    session_start();
+	$StoreID = $_SESSION['StoreID'];
+	$CustomerID = $_SESSION['CustomerID'];
+	$OrderID = $_SESSION['OrderID'];
+    
 	$page = 'CustomerInput';
 	include_once('CustomerNav.php');
 ?>
@@ -112,7 +118,7 @@ if (isset($_POST['submit'])) {
 			$result = queryDB($insert, $db);
 
 			// we have successfully inserted the record
-			echo ("Successfully entered " . $CustomerEmail . " into the database.");
+			echo ("Successfully created account using " . $CustomerEmail . ".");
 		} else {
 			$isComplete = false;
 			$errorMessage = "Sorry. We already have a customer account associated with the email you provided. " . $CustomerEmail;
@@ -141,7 +147,7 @@ if (isset($_POST['submit'])) {
         <div class="row">
             <div class="col-xs-12">
 
-<form action="CustomerInput.php" method="post">
+<form action="CreateAccountCheckout.php" method="post">
 
 <!-- name -->
 	<div class="form-group">
@@ -178,7 +184,7 @@ if (isset($_POST['submit'])) {
 
 <div class="row">
 	<div class="col-xs-12">
-		<p>Already have an account? <a href = "CustomerLogin.php">Click here to login</a></p>
+		<p>Already have an account? <a href = "LoginCheckout.php">Click here to login</a></p>
 	</div>
 </div>
 

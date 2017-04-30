@@ -2,6 +2,10 @@
 //
 session_start();
 $CustomerEmail = $_SESSION['CustomerEmail'];
+$StoreID = $_SESSION['StoreID'];
+$CustomerEmail = $_SESSION['CustomerEmail'];
+$CustomerID = $_SESSION['CustomerID'];
+$OrderID = $_SESSION['OrderID'];
 //include config.php and dbutils.php
 include_once('config.php');
 include_once('dbutils.php');

@@ -16,6 +16,7 @@ if (!isset($StoreID))
 //set page to echo active page in navbar
 $page = 'Product';
 include_once('CustomerNav.php');
+
 ?>
 <html>
     <head>
@@ -80,71 +81,37 @@ include_once('dbutils.php');
 //connect to database
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 
-//Add to cart button is called 'add'
-/*
-if(isset($_Post['add']))
-{
-	if(isset($_SESSION['CustomerEmail']))
-	{
-		$query = "SELECT CustomerID, Paid FROM Order_T WHERE CustomerID = " . $CustomerID . " AND Paid = 0;";
-		$result = queryDB($query, $db);
-		if(nTuples($result) == 0)
-			{
-			$query = "INSERT INTO Order_T (StoreID, Paid, CustomerID) VALUES (" . $StoreID . ", 0, " . $CustomerID . ");";
-			$result = queryDB($query, $db);
-			$_SESSION['OrderID'] = mysqli_insert_id($db);
-			$OrderID = $_SESSION['OrderID'];
-			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
-			$result = queryDB($query, $db);
-			}
-		else
-		{
-			$query = "SELECT OrderID FROM Order_T WHERE CustomerID = " . $CustomerID ." AND Paid = 0;";
-			$result = queryDB($query, $db);
-			while ($row = nextTuple($result))
-			{
-				$OrderID = $row['OrderID'];
-			}
-			$_SESSION['OrderID'] = $OrderID;
-			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
-			$result = queryDB($query, $db);
-		}
-	}
-	else
-	{
-		if(isset($_SESSION['OrderID']))
-		{
-			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
-			$result = queryDB($query, $db);
-		}
-		else
-		{
-			$query = "INSERT INTO Order_T (StoreID, Paid) VALUES (" . $StoreID . ", 0);";
-			$result = queryDB($query, $db);
-			$_SESSION['OrderID'] = mysqli_insert_id($db);
-			$OrderID = $_SESSION['OrderID'];
-			$query = "INSERT INTO OrderLine (Quantity, OrderID, ProductID)  VALUES ( " . $Quantity . ", " . $OrderID . ", " . $ProductID . ");";
-			$result = queryDB ($query, $db);
-		}
 
-
-	}
-
-}
-*/
 ?>
 
 
 
 <!-- HTML Table -->
 <div class = "row">
-    <div class = "col-xs-12">
+	
+	<div class = "col-xs-2">
+		<div class = "list-group">
+			
+			<?php
+				
+				$query = "SELECT CategoryID, CategoryName FROM Category ORDER BY CategoryName;";
+				$result = queryDB($query,$db);
+				
+				while ($row = nextTuple($result)) {
+					echo "<a href='Product.php?CategoryID=" . $row['CategoryID'] . "' class = 'list-group-item'>" . $row['CategoryName'] . "</a>";
+				}
+			?>
+			
+		</div>
+	</div>
+	
+    <div class = "col-xs-10">
         <table class = "table table-hover">
             <thead>
-                <th>Product Category</th>
-				
-				
-
+                <th>Product</th>
+				<th>Price</th>
+				<th></th>
+				<th>Quantity</th>
             </thead>
 			
 
@@ -155,7 +122,23 @@ if(isset($_Post['add']))
 //***** STILL Need to group by Category *****
 // And Still unclear how we want this page to be shown.
 
-$query = "SELECT ProductID, ProductName, Price, Picture FROM Product WHERE StoreID = " . $StoreID . " ORDER BY ProductName ;";
+//
+//Checks to see if customer has searched for a product
+if(isset($_GET['Search'])) {
+	$Search = $_GET['Search'];
+	$query = "SELECT ProductID, ProductName, Price, Picture FROM Product WHERE StoreID = " . $StoreID . " AND ProductName LIKE '%" . $Search . "%' ORDER BY ProductName ;";
+}
+//Checks to see if customer has selected a Product category they would like to view
+elseif(isset($_GET['CategoryID']))
+{
+	$CategoryID = $_GET['CategoryID'];
+	$query = "SELECT ProductID, ProductName, Price, Picture FROM Product WHERE StoreID = " . $StoreID . " AND CategoryID = " . $CategoryID . " ORDER BY ProductName ;";
+}
+
+//If customer has not searched for an item or selected a category, then list all items
+else {
+	$query = "SELECT ProductID, ProductName, Price, Picture FROM Product WHERE StoreID = " . $StoreID . " ORDER BY ProductName ;";
+}
 
 $result = queryDB($query, $db);
 
@@ -163,7 +146,7 @@ while($row = nextTuple($result))
 {
     echo "<tr>";
     echo "<td>" . $row['ProductName'] . "</td>";
-    echo "<td>" . $row['Price'] ."</td>";
+    echo "<td>$" . $row['Price'] ."</td>";
 	// picture
     echo "<td>";
     if ($row['Picture']) {
@@ -174,13 +157,12 @@ while($row = nextTuple($result))
     echo "</td>";
 	echo '<td><form action = "AddToCart.php" method = "post">';
     echo '<div class = "form-group">';
-    echo '<label for = "Quantity">Quantity</label><input type = "number" class = "form-control" name = "Quantity"/>';
+	echo '<input type = "number" min ="0" class = "form-control" name = "Quantity"/>';
     echo '</div></td>';
 	echo '<input type="hidden" name="ProductID" value="' . $row['ProductID'] . '"/>';
     echo '<td><button type = "add" class = "btn btn-default" name = "add">Add to Cart</button></td></tr>';
 	echo '</form>';
     }
-
 ?>
         </table>
     </div>
