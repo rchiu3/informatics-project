@@ -8,14 +8,13 @@ DROP TABLE IF EXISTS Employee;
 DROP TABLE IF EXISTS Store;
 DROP TABLE IF EXISTS Payment;
 
--- Customer Table --
+-- Customer Table --`   
 
 CREATE TABLE Customer (
 	CustomerID int unsigned NOT NULL AUTO_INCREMENT,
 	CustomerName varchar(30) NOT NULL,
 	CustomerAddress varchar(200) NOT NULL,
 	CustomerEmail varchar(60) NOT NULL,
-	Username varchar(30),
 	CustomerPass varchar(130),
 	PRIMARY KEY (CustomerID)
 );
@@ -31,11 +30,14 @@ INSERT INTO Customer(CustomerName, CustomerAddress, CustomerEmail) VALUES ('Leo 
 CREATE TABLE Order_T (
     OrderID int unsigned NOT NULL AUTO_INCREMENT,
     StoreID int NOT NULL,
-    OrderDate DATETIME DEFAULT NULL,
+    OrderDate varchar(50),
     Paid BOOLEAN,
     CustomerID int unsigned,
-    DeliveryDate DATE,
+    ConfirmationEmail varchar(100),
+    OrderName varchar(100),
+    DeliveryDate varchar(30),
     DeliveryAddress varchar(150),
+    DeliveryTime varchar(20),
     OrderStatus varchar(50),
     PRIMARY KEY (OrderID),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
@@ -48,7 +50,8 @@ INSERT INTO Order_T(OrderDate, StoreID, Paid, CustomerID, DeliveryDate, Delivery
 
 CREATE TABLE Store (
     StoreID int unsigned NOT NULL AUTO_INCREMENT,
-    StoreName varchar(50) NOT NULL, 
+    StoreName varchar(50) NOT NULL,
+    Picture varchar(128),
     PRIMARY KEY (StoreID)
 );
 
@@ -110,7 +113,10 @@ INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES (
 INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Blueberries - 6 oz Pack', 4.29, 2, 100, 1);
 -- Bakery CatID = 3 --
 -- Walmart's products (StoreID = 2)--
+INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('2% Milk - 1 Gallon', 4.99, 1, 100, 2);
+
 -- Hyvee's products (StoreID = 3 --
+INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Grade A Large Eggs - 12 ct', 1.99, 1, 100, 3);
 -- OrderLine Table --
 
 CREATE TABLE OrderLine (
@@ -138,7 +144,6 @@ CREATE TABLE Employee (
     EmployeeName varchar(50) NOT NULL,
     EmployeeAdmin BOOLEAN NOT NULL,
     EmployeeEmail varchar(100) NOT NULL,
-    EmployeeUser varchar(100) NOT NULL,
     EmployeePass varchar(300) NOT NULL,
     StoreID int unsigned NOT NULL,
     PRIMARY KEY (EmployeeID),
