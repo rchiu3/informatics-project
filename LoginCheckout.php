@@ -1,18 +1,18 @@
 <?php
-
+	// include config.php and dbutils.php
 	include_once('config.php');
 	include_once('dbutils.php');
-    
+    //start session to track customer
     session_start();
 	$StoreID = $_SESSION['StoreID'];
 	$CustomerID = $_SESSION['CustomerID'];
 	$OrderID = $_SESSION['OrderID'];
-    
+    // Use for Navbar Active tab
 	$page = 'CustomerLogin';
 	include_once('CustomerNav.php');
 	
 //
-// Code to handle input from form
+// Code to handle input from form 
 //
 
 if (isset($_POST['submit']))
@@ -32,6 +32,7 @@ if (isset($_POST['submit']))
     $isComplete = true;
     $errorMessage = "";
 
+	//error message if user didnt enter email
     if (!$CustomerEmail)
 	{
         $errorMessage .= " Please enter an email.";
@@ -40,13 +41,14 @@ if (isset($_POST['submit']))
 	{
         $CustomerEmail = makeStringSafe($db, $CustomerEmail);
     }
-
+	
+	//error message if user didnt enter password
     if (!$CustomerPass)
 	{
         $errorMessage .= " Please enter a password.";
         $isComplete = false;
     }
-
+	//display error message if a password and/or email were not entered
     if (!$isComplete)
 	{
         punt($errorMessage);
@@ -65,9 +67,10 @@ if (isset($_POST['submit']))
 		// compare entered password to the password on the database
 		if ($hashedpass == crypt($CustomerPass, $hashedpass))
 		{
-			
+			//Add CustomerEmail and ID to session
 			$_SESSION['CustomerEmail'] = $CustomerEmail;
 			$_SESSION['CustomerID'] = $CustomerID;
+			//Send customer to checkout page if they're password matched
 			header('Location: Checkout.php');
 			exit;
 
@@ -97,38 +100,7 @@ if (isset($_POST['submit']))
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<!--    *** NOT SURE IF THIS STYLING WORKS SAW IT ONLINE BUT WE CAN TEST THIS OUT L8R     ***
-		*** THOUGHT IF IT DID WORK IT COULD BE A GOOD START TO STYLING OUR PAGE UNIFORMLY ***
-   <style>
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
 
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center ;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-a:hover:not(.active) {
-    background-color: #111;
-}
-
-.active {
-background-color:#4CAF50;
-}
-</style>
--->
 </head>
 <title>Log-in</title>
 <body>
@@ -168,10 +140,10 @@ background-color:#4CAF50;
         <label for="CustomerPass">Password</label>
         <input type="password" class="form-control" name="CustomerPass"/>
     </div>
-
+<!-- Login Button -->
     <button type="submit" class="btn btn-default" name="submit">Login</button>
 </form>
-
+<!-- Create Account link -->
 <div class="row">
 	<div class="col-xs-12">
 		<p>Don't have an account? <a href = "CreateAccountCheckout.php">Click here to create one.</a></p>

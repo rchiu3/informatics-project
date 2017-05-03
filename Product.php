@@ -1,12 +1,12 @@
 <?php
-
+//start session to track customer
 session_start();
 $StoreID = $_SESSION['StoreID'];
 $CustomerEmail = $_SESSION['CustomerEmail'];
 $CustomerID = $_SESSION['CustomerID'];
 $OrderID = $_SESSION['OrderID'];
 
-//send user back to customer home if they don't have a grocer selected
+//send user back to customer home if they don't have a grocer selected 
 if (!isset($StoreID))
 {
 	header ('Location: CustomerHome.php');
@@ -15,6 +15,7 @@ if (!isset($StoreID))
 
 //set page to echo active page in navbar
 $page = 'Product';
+//navbar
 include_once('CustomerNav.php');
 
 ?>
@@ -29,38 +30,6 @@ include_once('CustomerNav.php');
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<!--    *** NOT SURE IF THIS STYLING WORKS SAW IT ONLINE BUT WE CAN TEST THIS OUT L8R     ***
-		*** THOUGHT IF IT DID WORK IT COULD BE A GOOD START TO STYLING OUR PAGE UNIFORMLY ***
-   <style>
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-a:hover:not(.active) {
-    background-color: #111;
-}
-
-.active {
-background-color:#4CAF50;
-}
-</style>
--->
 <title>Products</title>
 </head>
 
@@ -93,7 +62,7 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 		<div class = "list-group">
 			
 			<?php
-				
+				//side Navbar displaying Different Product Categories
 				$query = "SELECT CategoryID, CategoryName FROM Category ORDER BY CategoryName;";
 				$result = queryDB($query,$db);
 				
@@ -141,7 +110,7 @@ else {
 }
 
 $result = queryDB($query, $db);
-
+//Displays products
 while($row = nextTuple($result))
 {
     echo "<tr>";

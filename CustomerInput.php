@@ -2,9 +2,12 @@
 
 
 <?php
+	//include config.php dbutils.php
     include_once('config.php');
     include_once('dbutils.php');
+	//used for active tab in navbar
 	$page = 'CustomerInput';
+	//navbar
 	include_once('CustomerNav.php');
 ?>
 
@@ -62,44 +65,55 @@ if (isset($_POST['submit'])) {
     $isComplete = true;
     $errorMessage = "";
 
+	//failed to enter email
     if (!$CustomerEmail) {
         $errorMessage .= " Please enter an email.";
+		//form not complete
         $isComplete = false;
-    } else {
+    }
+	else {
         $CustomerEmail = makeStringSafe($db, $CustomerEmail);
     }
 
+	//failed to enter password
     if (!$CustomerPass) {
         $errorMessage .= " Please enter a password.";
+		//form not complete
         $isComplete = false;
     }
-
+	//failed to confirm password
 	if (!$CustomerPass2) {
         $errorMessage .= " Please enter a password again.";
+		//form not complete
         $isComplete = false;
     }
-
+	//Both passwords entered did not match
 	if ($CustomerPass != $CustomerPass2) {
 		$errorMessage .= " Your passwords do not match.";
+		//form not complete
 		$isComplete = false;
 	}
-
+	//failed to enter name
     if (!$CustomerName) {
         $errorMessage .= " Please enter your name.";
+		//form not complete
         $isComplete = false;
     }
-
+	
+	//failed to enter address
     if (!$CustomerAddress) {
         $errorMessage .= " Please enter your address.";
+		//form not complete
         $isComplete = false;
     }
 
-
+	//if all required fields filled
     if ($isComplete) {
 
 		// Check for existing customer with same email
 		$query = "SELECT CustomerEmail FROM Customer WHERE CustomerEmail = '" . $CustomerEmail . "';";
 		$result = queryDB($query, $db);
+		//if no customer associated with given email
 		if (nTuples($result) == 0) {
 
 			// generate the hashed version of the password
@@ -113,7 +127,10 @@ if (isset($_POST['submit'])) {
 
 			// we have successfully inserted the record
 			echo ("Successfully entered " . $CustomerEmail . " into the database.");
-		} else {
+		}
+		//already a customer in database with that email
+		else {
+			//form not complete
 			$isComplete = false;
 			$errorMessage = "Sorry. We already have a customer account associated with the email you provided. " . $CustomerEmail;
 		}
@@ -128,6 +145,7 @@ if (isset($_POST['submit'])) {
 <div class="row">
     <div class="col-xs-12">
 <?php
+	//if a value for isComplete and the form is missing a required field
     if (isset($isComplete) && !$isComplete) {
         echo '<div class="alert alert-danger" role="alert">';
         echo ($errorMessage);
@@ -149,7 +167,7 @@ if (isset($_POST['submit'])) {
 		<input type="name" class="form-control" name="CustomerName"/>
 	</div>
 
-<!-- email -->
+<!-- email  -->
     <div class="form-group">
         <label for="CustomerEmail">Email</label>
         <input type="email" class="form-control" name="CustomerEmail"/>
@@ -172,10 +190,10 @@ if (isset($_POST['submit'])) {
         <label for="CustomerAddress">Address</label>
         <input type="address" class="form-control" name="CustomerAddress"/>
     </div>
-
+<!-- Create Account Button -->
     <button type="submit" class="btn btn-default" name="submit">Create Account</button>
 </form>
-
+<!-- Link to login -->
 <div class="row">
 	<div class="col-xs-12">
 		<p>Already have an account? <a href = "CustomerLogin.php">Click here to login</a></p>

@@ -1,5 +1,5 @@
 <?php
-
+    //Start session to keep track of customer
     session_start();
     $StoreID = $_SESSION['StoreID'];
     $CustomerEmail = $_SESSION['CustomerEmail'];
@@ -12,7 +12,7 @@
 <?php
 /*
  * This php file prompts users on whether they want to delete a particular item from their order
- * It obtains the id for the OrderLine to delete from an id variable passed using the GET method (in the url)
+ * It obtains the id for the OrderLine to delete from an id variable passed using the GET method (in the url) 
  *
  */
     include_once('config.php');

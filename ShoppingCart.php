@@ -6,52 +6,23 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-<!-- Latest compiled and minified JavaScript -->
+<!-- Latest compiled and minified JavaScript  -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<!--    *** NOT SURE IF THIS STYLING WORKS SAW IT ONLINE BUT WE CAN TEST THIS OUT L8R     ***
-		*** THOUGHT IF IT DID WORK IT COULD BE A GOOD START TO STYLING OUR PAGE UNIFORMLY ***
-   <style>
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
 
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-a:hover:not(.active) {
-    background-color: #111;
-}
-
-.active {
-background-color:#4CAF50;
-}
-</style>
--->
 </head>
 <title>Shopping Cart</title>
 <body>
 	
 	<?php
+	//start session to keep track of customers
 	session_start();
 	$StoreID = $_SESSION['StoreID'];
 	$CustomerEmail = $_SESSION['CustomerEmail'];
 	$CustomerID = $_SESSION['CustomerID'];
 	$OrderID = $_SESSION['OrderID'];	
 	$page = 'ShoppingCart';
+	//Nav Bar
 	include_once('CustomerNav.php');
 
 	?>
@@ -65,13 +36,7 @@ background-color:#4CAF50;
 //include config.php and dbutils.php
 include_once('config.php');
 include_once('dbutils.php');
-/*
-session_start();
-$StoreID = $_SESSION['StoreID'];
-$CustomerEmail = $_SESSION['CustomerEmail'];
-$CustomerID = $_SESSION['CustomerID'];
-$OrderID = $_SESSION['OrderID'];
-*/
+
 //connect to database
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 
@@ -84,7 +49,9 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
                 <th>Product Name</th>
 				<th>Quantity</th>
 				<th>Price</th>
+				<th>Store</th>
 				<th></th>
+				<th>Quantity</th>
 				<th></th>
 				<th></th>
             </thead>
@@ -92,39 +59,54 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 <!-- Display  Shopping Cart data -->
 
 <?php
-// SQL query to list products from shopping cart
-//***** STILL Need to group by Category *****
-// And Still unclear how we want this page to be shown.
-//$OrderID 
-$query = 'SELECT o.OrderLineID, o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture FROM Product p, OrderLine o WHERE p.ProductID = o.ProductID AND o.OrderID = ' . $OrderID . ';';
+//If customer/guest has not been assigned an orderID (*because they havent added an item to the shopping cart*)
+//Customer/guest is blocked from viewing the shopping cart until they've added an item to their cart
+if (!isset($OrderID))
+{
+	//Send them to Product.php so they can add products
+	header('Location: Product.php');
+    exit;
+}
 
-$result = queryDB($query, $db);
+else
+	{
+	// SQL query to list products from shopping cart
+	// Displays list of items in shopping cart ordered by grocer
+	$query = 'SELECT o.OrderLineID, o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture, s.StoreName FROM Product p, OrderLine o, Store s WHERE s.StoreID = p.StoreID AND p.ProductID = o.ProductID AND o.OrderID = ' . $OrderID . ' ORDER BY StoreName;';
+	
+	$result = queryDB($query, $db);
+	
+	while($row = nextTuple($result))
+	{
+		echo "\n <tr>";
+		echo "<td>" . $row['ProductName'] . "</td>";
+		echo "<td>" . $row['Quantity'] . "</td>";
+		echo "<td>$" . $row['Price'] . "</td>";
+		echo "<td>" . $row['StoreName'] . "</td>";
+		// picture
+		echo "<td>";
+		if ($row['Picture'])
+		{
+			$imageLocation = $row['Picture'];
+			$altText = $row['ProductName'];
+			echo "<img src='$imageLocation' width='150' alt='$altText'>";
+		}
+		echo "</td>";
+		echo "</td>";
+		//Update quantity field
+		echo '<td><form action = "EditCart.php" method = "post">';
+		echo '<div class = "form-group">';
+		echo '<input type = "number" min ="0" class = "form-control" name = "Quantity" value = "' . $row['Quantity'] . '"/>';
+		echo '</div></td>';
+		echo '<input type="hidden" name="OrderLineID" value="' . $row['OrderLineID'] . '"/>';
+		echo '<td><button type = "Update" class = "btn btn-default" name = "Update">Update Quantity</button></td>';
+		echo '</form>';
+		//Remove Product
+		echo "<td><a href='RemoveCart.php?OrderLineID=" . $row['OrderLineID'] . "'>Remove</a></td>";
+		echo "</tr> \n";
 
-while($row = nextTuple($result)) {
-    echo "\n <tr>";
-    echo "<td>" . $row['ProductName'] . "</td>";
-    echo "<td>" . $row['Quantity'] . "</td>";
-    echo "<td>$" . $row['Price'] . "</td>";
-   	// picture
-    echo "<td>";
-    if ($row['Picture']) {
-        $imageLocation = $row['Picture'];
-        $altText = $row['ProductName'];
-        echo "<img src='$imageLocation' width='150' alt='$altText'>";
     }
-    echo "</td>";
-	echo "</td>";
-	echo '<td><form action = "EditCart.php" method = "post">';
-    echo '<div class = "form-group">';
-	echo '<input type = "number" min ="0" class = "form-control" name = "Quantity" value = "' . $row['Quantity'] . '"/>';
-    echo '</div></td>';
-	echo '<input type="hidden" name="OrderLineID" value="' . $row['OrderLineID'] . '"/>';
-    echo '<td><button type = "Update" class = "btn btn-default" name = "Update">Update Quantity</button></td>';
-	echo '</form>';
-	echo "<td><a href='RemoveCart.php?OrderLineID=" . $row['OrderLineID'] . "'>Remove</a></td>";
-    echo "</tr> \n";
-
-    }
+}
 ?>
         </table>
      </div>
@@ -143,7 +125,7 @@ while($row = nextTuple($result)) {
         }
         
         
-
+// If the Customer is logged in display a single  button that takes you to checkout
 if (isset($CustomerID))
 {
 	echo '<div class="row">';
@@ -152,11 +134,14 @@ if (isset($CustomerID))
 		echo '</div>';
 	echo '</div>';
 }
+//If Customer is not logged in or if user is a Guest display two buttons with the option to proceed to checkout as guest or login
 else
 {
 	echo '<div class="row">';
 		echo '<div class="col-xs-12">';
-			echo '<a class="btn btn-default" href="Checkout.php">Checkout as Guest</a>';
+			//GuestCheckout.php assigns the guest a customerID and adds it to the session
+			echo '<a class="btn btn-default" href="GuestCheckout.php">Checkout as Guest</a>';
+			//LoginCheckout.php Allows customer to login
 			echo '<a class="btn btn-default" href="LoginCheckout.php">Login/Sign-Up and Checkout</a>';
 		echo '</div>';
 	echo '</div>';

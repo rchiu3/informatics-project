@@ -20,39 +20,6 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<!--    *** NOT SURE IF THIS STYLING WORKS SAW IT ONLINE BUT WE CAN TEST THIS OUT L8R     ***
-		*** THOUGHT IF IT DID WORK IT COULD BE A GOOD START TO STYLING OUR PAGE UNIFORMLY ***
-   <style>
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-a:hover:not(.active) {
-    background-color: #111;
-}
-
-.active {
-background-color:#4CAF50;
-}
-</style>
--->
-
 </head>
 <title>Check Out</title>
 <body>
@@ -68,25 +35,19 @@ background-color:#4CAF50;
                 <th>Product Name</th>
 				<th>Quantity</th>
 				<th>Price</th>
+				<th>Store</th>
 				<th></th>
 				<th></th>
 				<th></th>
             </thead>
 <?php
-
 //include config.php and dbutils.php
 include_once('config.php');
 include_once('dbutils.php');
 //connect to database
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-//session_start{};
-//$OrderID = $_SESSION['OrderID'];
-// We have to check if they have an order to view checkout page if not display your shopping cart is empty
 
-//If Logged in
-//if(isset($_SESSION['CustomerEmail'])
-//{
-
+	//Get OrderID
 	$query = "SELECT OrderID FROM Order_T WHERE CustomerID = " . $CustomerID .";";
 	$result = queryDB($query, $db);
 	while ($row = nextTuple($result))
@@ -94,15 +55,17 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 		$OrderID = $row['OrderID'];
 	}
 	$_SESSION['OrderID'] = $OrderID;
-	//Should this query Call to check O.OrderID=OLine.OrderID & P.PoductID = OLine.ProductID
-	$query = 'SELECT P.ProductID, P.ProductName, P.Price, P.Picture, O.Quantity, O.OrderID FROM Product P, OrderLine O WHERE P.ProductID = O.ProductID AND O.OrderID = ' . $OrderID . ';';
+	//Query to get Order displayed
+	$query = 'SELECT o.OrderLineID, o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture, s.StoreName FROM Product p, OrderLine o, Store s WHERE s.StoreID = p.StoreID AND p.ProductID = o.ProductID AND o.OrderID = ' . $OrderID . ' ORDER BY StoreName;';
 	$result = queryDB($query, $db);
+	//Display Each Product in the OrderLine
 	while($row = nextTuple($result))
 	{
     echo "\n <tr>";
     echo "<td>" . $row['ProductName'] . "</td>";
     echo "<td>" . $row['Quantity'] . "</td>";
     echo "<td>$" . $row['Price'] . "</td>";
+	echo "<td>" . $row['StoreName'] . "</td>";
    	// picture
     echo "<td>";
     if ($row['Picture'])
@@ -116,15 +79,9 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 	}
 	
 
-//}
-
-//If Guest
 
 
-//Start A Seeion Call the OrderId with session $orderID=$_Session....
-//use orderID to list important information from OrderLine
-//make query to total out
-//take payment information
+
 ?>
 
 
@@ -144,7 +101,74 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
             echo "<h4>$" . $row['Final'] . "</h4>";
         }
         
-?>		
+?>
+
+<br>
+
+<!-- Form for customer to input information -->
+        <div class="row">
+            <div class="col-xs-12">
+<h3>Billing Information</h3>
+<form action="Ordered.php" method="post">
+<!-- Not keeping Payment Information only Adding Billing Info to Order_T 
+<!-- Name on Card -->
+	<div class="form-group">
+		<label for="NameOnCard">Name On Credit Card:</label>
+		<input type="name" class="form-control" name="NameOnCard"/>
+	</div>
+
+<!-- Credit Card Number -->
+    <div class="form-group">
+        <label for="ExpDate">Expiration Date (mm/yy):</label>
+        <input type="text" class="form-control" name="ExpDate"/>
+    </div>
+	
+<!-- Credit Card Number -->
+    <div class="form-group">
+        <label for="CCNumber">Credit Card Number:</label>
+        <input type="text" class="form-control" name="CCNumber"/>
+    </div>
+
+<!-- CSV -->
+    <div class="form-group">
+        <label for="CSV">CSV:</label>
+        <input type="text" class="form-control" name="CSV"/>
+    </div>
+
+ <!-- Change type to text if cannot view on IE 11 or FireFox-->
+<br>
+<h3>Shipping Information</h3>
+<!-- Name on Order -->
+	<div class="form-group">
+		<label for="OrderName">Name:</label>
+		<input type="text" class="form-control" name="OrderName"/>
+	</div>
+<!-- Email -->
+    <div class="form-group">
+        <label for="ConfirmationEmail">Please provide the email you would like the order confirmation sent to:</label>
+        <input type="email" class="form-control" name="ConfirmationEmail"/>
+    </div>
+	
+<!-- Delivery Date -->	
+    <div class="form-group">
+        <label for="DeliveryDate">Delivery Date:</label>
+        <input type="date" class="form-control" placeholder = "Unable to do same day deliveries, please allow atleast one day for filling and processing." name="DeliveryDate"/>
+    </div>
+		
+<!-- Delivery Time -->	
+    <div class="form-group">
+        <label for="DeliveryTime">Preferred Time of Delivery <i>*Delivery hours are from 9am - 5pm*</i></label>
+        <input type="time" value="09:00" step="900" class="form-control"  name="DeliveryTime"/>
+    </div>
+
+<!-- Delivery Address -->
+    <div class="form-group">
+        <label for="DeliveryAddress">Delivery Address:</label>
+        <input type="address" class="form-control" name="DeliveryAddress"/>
+    </div>
+<!-- Button to Place Order -->
+    <button type="submit" class="btn btn-default" name="submit">Place Order</button>
+</form>		
 		
 </body>
 </html>

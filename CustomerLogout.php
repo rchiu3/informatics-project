@@ -7,7 +7,7 @@
     }
     session_destroy();
      
-    //Redirect user to login
+    //Redirect user to Home page 
     header("Location: CustomerHome.php");
     exit;
 ?>

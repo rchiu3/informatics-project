@@ -1,13 +1,18 @@
 <?php
+
+//include config.php dbutils.php
 	include_once('config.php');
 	include_once('dbutils.php');
+	
+	//used for active tab in nav bar
 	$page = 'CustomerLogin';
+	//navbar
 	include_once('CustomerNav.php');
 	
 //
 // Code to handle input from form
 //
-
+//if
 if (isset($_POST['submit']))
 {
 
@@ -24,22 +29,27 @@ if (isset($_POST['submit']))
     // check for required fields
     $isComplete = true;
     $errorMessage = "";
-
+//failed to enter email
     if (!$CustomerEmail)
 	{
+		//add to error message
         $errorMessage .= " Please enter an email.";
+		//form not complete
         $isComplete = false;
-    } else
+    }
+	else
 	{
         $CustomerEmail = makeStringSafe($db, $CustomerEmail);
     }
-
+	//failed to enter password
     if (!$CustomerPass)
 	{
+		//add to error message
         $errorMessage .= " Please enter a password.";
+		//form not complete
         $isComplete = false;
     }
-
+	//form not complete(missing required field)
     if (!$isComplete)
 	{
         punt($errorMessage);
@@ -63,8 +73,10 @@ if (isset($_POST['submit']))
 			// start a session
 			if (session_start())
 			{
+				//add to session
 				$_SESSION['CustomerEmail'] = $CustomerEmail;
 				$_SESSION['CustomerID'] = $CustomerID;
+				//send customer to home page
 				header('Location: CustomerHome.php');
 				exit;
 			}
@@ -98,38 +110,7 @@ if (isset($_POST['submit']))
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<!--    *** NOT SURE IF THIS STYLING WORKS SAW IT ONLINE BUT WE CAN TEST THIS OUT L8R     ***
-		*** THOUGHT IF IT DID WORK IT COULD BE A GOOD START TO STYLING OUR PAGE UNIFORMLY ***
-   <style>
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
 
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center ;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-a:hover:not(.active) {
-    background-color: #111;
-}
-
-.active {
-background-color:#4CAF50;
-}
-</style>
--->
 </head>
 <title>Log-in</title>
 <body>
@@ -153,7 +134,7 @@ background-color:#4CAF50;
             </div>
         </div>
 
-<!-- form for inputting data -->
+<!-- form for inputting data  -->
         <div class="row">
             <div class="col-xs-12">
 
@@ -169,10 +150,11 @@ background-color:#4CAF50;
         <label for="CustomerPass">Password</label>
         <input type="password" class="form-control" name="CustomerPass"/>
     </div>
+<!-- Button to Login -->
 
     <button type="submit" class="btn btn-default" name="submit">Login</button>
 </form>
-
+<!-- link to create an account-->
 <div class="row">
 	<div class="col-xs-12">
 		<p>Don't have an account? <a href = "CustomerInput.php">Click here to create one.</a></p>
