@@ -10,6 +10,7 @@
     $StoreName = $_SESSION['StoreName'];
     $Admin = $_SESSION['Admin'];
 	
+	//Kick users if they are not an admin of their store
 	if (!$Admin) {
 		header('Location: GrocerHome.php');
 		exit;
@@ -21,8 +22,8 @@
 
 <?php
 /*
- * This php file prompts users on whether they want to delete a particular pizza
- * It obtains the id for the pizza to delete from an id variable passed using the GET method (in the url)
+ * This php file prompts users on whether they want to delete an employee
+ * It obtains the id for the employee to delete from an id variable passed using the GET method (in the url)
  *
  */
     include_once('config.php');
@@ -40,15 +41,15 @@
         $delete = $_POST['delete'];
         
         if ($delete == 'yes') {
-            // if the user said yes to delete, we need to delete the product with ProductID = $ProductID
+            // if the user said yes to delete, we need to delete the product with EmployeeID = $EmployeeID
             
             // connect to the database
             $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
             
-            // query to delete product
+            // query to delete employee
             $query = "DELETE FROM Employee WHERE EmployeeID = $EmployeeID;";
             
-            // run the delete statement to remove product from product table
+            // run the delete statement to remove employee from employee table
             queryDB($query, $db);
         }
         
@@ -60,19 +61,19 @@
     
 
     /*
-     * Check if a GET variable was passed with the id for the pizza
+     * Check if a GET variable was passed with the ID for the employee
      *
      */
     if(!isset($_GET['EmployeeID'])) {
-        // if the id was not passed through the url
+        // if the ID was not passed through the url
         
-        // send them out to pizza.php and stop executing code in this page
+        // send them out to EmployeeInput.php and stop executing code in this page
         header('Location: EmployeeInput.php');
         exit;
     }
     
     /*
-     * Now we'll check to make sure the id passed through the GET variable matches the id of a pizza in the database
+     * Now we'll check to make sure the ID passed through the GET variable matches the ID of an employee in the database
      */
     
     // connect to the database
@@ -85,18 +86,18 @@
     // run the query
     $result = queryDB($query, $db);
     
-    // if the id is not in the pizza table, then we need to send the user back to pizza.php
+    // if the ID is not in the employee table, then we need to send the user back to EmployeeInput.php
     if (nTuples($result) == 0) {
-        // send them out to pizza.php and stop executing code in this page
+        // send them out to EmployeeINput.php and stop executing code in this page
         header('Location: EmployeeInput.php');
         exit;
     }
     
     /*
-     * Now we know we got a valid product id through the GET variable
+     * Now we know we got a valid Employee ID through the GET variable
      */
     
-    // get some data from the Employee table to ask a better question when confirming deletion
+    // get data from the Employee table to ask a better question when confirming deletion
     $row = nextTuple($result);
     
     $EmployeeName = $row['EmployeeName'];    
@@ -141,6 +142,8 @@ include_once('GrocerNav.php');
 <div class="row">
     <div class="col-xs-12">
 <form action="DeleteEmployee.php" method="post">
+	
+	<!-- Radio buttons for yes and no -->
     <div class="radio">
         <label>
             <input type="radio" name="delete" value="yes" checked>
@@ -153,7 +156,8 @@ include_once('GrocerNav.php');
             No
         </label>
     </div>
-    
+	
+	<!-- Hidden Employee ID to use when the form is submitted -->
     <input type="hidden" name="EmployeeID" value="<?php echo $EmployeeID; ?>"/>
     
     <button type="submit" class="btn btn-default" name="submit">Submit</button>

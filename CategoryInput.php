@@ -6,7 +6,7 @@
         header('Location: GrocerLogin.php');
         exit;
     }
-    
+
     $StoreName = $_SESSION['StoreName'];
     
 ?>
@@ -30,13 +30,14 @@
 <?php
 
 //Set current page to echo class=active in navbar
+//Uses Store Name from Session Variable to display name in navbar
 
 $page = 'CategoryInput';
 include_once('GrocerNav.php');
 
 ?>
         
-        <div class = "container" style = "margin-top:50px">
+<div class = "container" style = "margin-top:50px">
         
 <!-- PHP code to manage the data submitted by the form -->
 <?php
@@ -100,6 +101,7 @@ if(isset($_POST['submit'])) {
     <input type = "text" class = "form-control" name = "CategoryName"/>
 </div>
 
+<!-- Button to submit category name -->
 <button type = "submit" class = "btn btn-default" name = "submit">Save</button>
 </form>
         
@@ -121,7 +123,8 @@ if(isset($_POST['submit'])) {
 $query = 'SELECT CategoryName FROM Category ORDER BY CategoryName;';
     
 $result = queryDB($query, $db);
-    
+
+//Display all categories in Category table
 while($row = nextTuple($result)) {
     echo "\n <tr>";
     echo "<td>" . $row['CategoryName'] . "</td>";

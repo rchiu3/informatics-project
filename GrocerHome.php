@@ -33,7 +33,8 @@ include_once('GrocerNav.php');
     <div class='container' style='margin-top:50px'>
 
 <h1>Grocer Home</h1>
-     
+    
+<!--Description of grocer website and explain admin functions -->
 <div class='row'>
     <div class='col-xs-12'>
         <p>Welcome to the grocer homepage! Please <a href='GrocerLogin.php'>login</a> or <a href='GrocerInput.php'>create an account</a>
@@ -48,6 +49,7 @@ include_once('GrocerNav.php');
 
 <h2>Grocer Tools</h2>
 
+<!-- Link and explanation of Product Input page -->
 <div class='row'>
     <div class='col-xs-12'>
         <a href='ProductInput.php'>Product Input</a>
@@ -57,6 +59,7 @@ include_once('GrocerNav.php');
     </div>
 </div>
 
+<!-- Link and explanation of Category Input page -->
 <div class='row'>
     <div class='col-xs-12'>
         <a href='CategoryInput.php'>Category Input</a>
@@ -65,6 +68,7 @@ include_once('GrocerNav.php');
     </div>
 </div>
 
+<!-- Link and explanation of Orders page -->
 <div class='row'>
     <div class='col-xs-12'>
         <a href='GrocerOrders.php'>Orders</a>
@@ -73,11 +77,13 @@ include_once('GrocerNav.php');
     </div>
 </div>
 
+<!-- Link and explanation of Employees page -->
 <div class='row'>
     <div class='col-xs-12'>
         <a href='EmployeeInput.php'>Employees</a>
-        <p>This page is only accessible to administrators of your store. Here you can view add new employees and edit or delete existing ones.
-        For new employees, just set a default password for them and they will be asked to change it upon their first login.</p>
+        <p>This page is only accessible to administrators of your store. Here you can view all employees in your store, add new employees,
+        and edit or delete existing ones. For new employees, just set a default password for them and they will be asked to change it upon
+        their first login.</p>
     </div>
 </div>
         

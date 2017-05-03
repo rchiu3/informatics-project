@@ -1,6 +1,6 @@
 <?php
 
-//Kick users if they are not logged in or if they are not an admin
+//Kick users if they are not logged in
     session_start();
     if (!isset($_SESSION['EmployeeEmail'])) {
         header('Location: GrocerLogin.php');
@@ -9,12 +9,18 @@
     
     $StoreName = $_SESSION['StoreName'];
 	$StoreID = $_SESSION['StoreID'];
-
+	$Admin = $_SESSION['Admin'];
+	
+	//Kick users if they aren't an admin of the store
+	if (!$Admin) {
+		header('Location: GrocerHome.php');
+		exit;
+	}
 
 
 /*
- * This php file enables users to edit a particular product
- * It obtains the id for the product to update from an id variable passed using the GET method (in the url)
+ * This php file enables users to edit a specific employee
+ * It obtains the id for the product to update from an ID variable passed using the GET method (in the url)
  *
  */
     include_once('config.php');
@@ -30,7 +36,7 @@
         // get data from form
         $EmployeeID = $_POST['EmployeeID'];
         if (!isset($EmployeeID)) {
-            // if for some reason the id didn't post, kick them back to EmployeeInput.php
+            // if for some reason the ID didn't post, kick them back to EmployeeInput.php
             header('Location: EmployeeInput.php');
             exit;
         }
@@ -40,7 +46,6 @@
         $EmployeeName = $_POST['EmployeeName'];
         $EmployeeAdmin = $_POST['EmployeeAdmin'];
         $EmployeeEmail = $_POST['EmployeeEmail'];
-		$EmployeeUser = $_POST['EmployeeUser'];
 		$EmployeePass = $_POST['EmployeePass'];
 		$EmployeePass2 = $_POST['EmployeePass2'];
         
@@ -64,10 +69,6 @@
             $errorMessage .= "Please enter an email for the employee. \n";
             $isComplete = false;
         }
-		if(!$EmployeeUser) {
-            $errorMessage .= "Please enter a username for the employee. \n";
-            $isComplete = false;
-        }	
 		if ($EmployeePass != $EmployeePass2) {
 			$errorMessage .= " Your passwords do not match.";
 			$isComplete = false;
@@ -83,10 +84,10 @@
 					$hashedpass = crypt($EmployeePass, getSalt());
 			
 					// put together SQL statement to update the employee
-					$query = "UPDATE Employee SET EmployeeName='$EmployeeName', EmployeeAdmin=$EmployeeAdmin, EmployeeEmail='$EmployeeEmail', EmployeeUser='$EmployeeUser', EmployeePass='$hashedpass' WHERE EmployeeID=$EmployeeID;";
+					$query = "UPDATE Employee SET EmployeeName='$EmployeeName', EmployeeAdmin=$EmployeeAdmin, EmployeeEmail='$EmployeeEmail', EmployeePass='$hashedpass' WHERE EmployeeID=$EmployeeID;";
 				}
 				else {
-					$query = "UPDATE Employee SET EmployeeName='$EmployeeName', EmployeeAdmin=$EmployeeAdmin, EmployeeEmail='$EmployeeEmail', EmployeeUser='$EmployeeUser' WHERE EmployeeID=$EmployeeID;";
+					$query = "UPDATE Employee SET EmployeeName='$EmployeeName', EmployeeAdmin=$EmployeeAdmin, EmployeeEmail='$EmployeeEmail' WHERE EmployeeID=$EmployeeID;";
 				}
 			
             // connect to the database
@@ -105,11 +106,11 @@
         //
     
         /*
-         * Check if a GET variable was passed with the id for the employee
+         * Check if a GET variable was passed with the ID for the employee
          *
          */
         if(!isset($_GET['EmployeeID'])) {
-            // if the id was not passed through the url
+            // if the ID was not passed through the url
             
             // send them out to EmployeeInput.php and stop executing code in this page
             header('Location: EmployeeInput.php');
@@ -117,7 +118,7 @@
         }
         
         /*
-         * Now we'll check to make sure the id passed through the GET variable matches the id of an employee in the database
+         * Now we'll check to make sure the ID passed through the GET variable matches the ID of an employee in the database
          */
         
         // connect to the database
@@ -138,18 +139,17 @@
         }
         
         /*
-         * Now we know we got a valid employee id through the GET variable
+         * Now we know we got a valid employee ID through the GET variable
          */
         
-        // get data on product to fill out form with existing values
+        // get data on employee to fill out form with existing values
         $row = nextTuple($result);
         
         $EmployeeID = $row['EmployeeID'];
         $EmployeeName = $row['EmployeeName'];
         $EmployeeAdmin = $row['EmployeeAdmin'];
         $EmployeeEmail = $row['EmployeeEmail'];
-		$EmployeeUser = $row['EmployeeUser'];
-        
+
         }
 ?>
 
@@ -207,7 +207,7 @@ include_once('GrocerNav.php');
 
 
 
-<!-- form to update product -->
+<!-- form to update Employee -->
 <div class="row">
     <div class="col-xs-12">
         
@@ -223,12 +223,6 @@ include_once('GrocerNav.php');
 <div class="form-group">
     <label for="EmployeeEmail">Employee Email:</label>
     <input type="text" class="form-control" name="EmployeeEmail" value="<?php if($EmployeeEmail) { echo $EmployeeEmail; } ?>"/>
-</div>
-
-<!-- Employee User -->
-<div class="form-group">
-    <label for="EmployeeUser">Username:</label>
-    <input type="text" class="form-control" name="EmployeeUser" value="<?php if($EmployeeUser) { echo $EmployeeUser; } ?>"/>
 </div>
 
 <!-- password1 -->
@@ -254,7 +248,7 @@ include_once('GrocerNav.php');
     </label>    
 </div>
 
-<!-- hidden id (not visible to user, but need to be part of form submission so we know which product we are updating -->
+<!-- hidden ID (not visible to user, but need to be part of form submission so we know which product we are updating -->
 <input type="hidden" name="EmployeeID" value="<?php echo $EmployeeID; ?>"/>
 
 <button type="submit" class="btn btn-default" name="submit">Save</button>

@@ -15,6 +15,7 @@
 	$StoreID = $_SESSION['StoreID'];
 	$Admin = $_SESSION['Admin'];
 	
+	//Kick users if they aren't an admin of their store
 	if (!$Admin) {
 		header('Location: GrocerHome.php');
 		exit;
@@ -91,13 +92,6 @@ if (isset($_POST['submit'])) {
     } else {
         $EmployeeEmail = makeStringSafe($db, $EmployeeEmail);
     }
-	
-    if (!$EmployeeUser) {
-        $errorMessage .= " Please enter a username for the employee.";
-        $isComplete = false;
-    } else {
-        $EmployeeUser = makeStringSafe($db, $EmployeeUser);
-    }
 
     if (!$EmployeePass) {
         $errorMessage .= " Please enter a password.";
@@ -122,7 +116,7 @@ if (isset($_POST['submit'])) {
     if ($isComplete) {
     
 		// Check for existing user with same email
-		$query = "SELECT EmployeeUser FROM Employee WHERE EmployeeUser = '" . $EmployeeUser . "';";
+		$query = "SELECT EmployeeEmail FROM Employee WHERE EmployeeEmail = '" . $EmployeeEmail . "';";
 		$result = queryDB($query, $db);
 		if (nTuples($result) == 0) {
 			
@@ -130,7 +124,7 @@ if (isset($_POST['submit'])) {
 			$hashedpass = crypt($EmployeePass, getSalt());
 			
 			// SQL to insert record
-			$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeeUser, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "','" . $EmployeeEmail . "', '" . $EmployeeUser . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
+			$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "','" . $EmployeeEmail . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
 		
 			// run the insert statement
 			$result = queryDB($insert, $db);
@@ -139,7 +133,7 @@ if (isset($_POST['submit'])) {
 			echo ("Successfully entered " . $EmployeeName . " into the database.");
 		} else {
 			$isComplete = false;
-			$errorMessage = "Sorry. We already have a user account under the username: " . $EmployeeUser;
+			$errorMessage = "Sorry. We already have a user account under the email: " . $EmployeeEmail;
 		}
 	}
 }
@@ -179,12 +173,6 @@ if (isset($_POST['submit'])) {
         <input type="email" class="form-control" name="EmployeeEmail"/>
     </div>
 
-<!-- username -->
-    <div class="form-group">
-        <label for="EmployeeUser">Username</label>
-        <input type="name" class="form-control" name="EmployeeUser"/>
-    </div>
-
 <!-- password1 -->
     <div class="form-group">
         <label for="EmployeePass">Password</label>
@@ -221,7 +209,6 @@ if (isset($_POST['submit'])) {
             <thead>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Username</th>
                 <th>Admin?</th>
                 <th></th>
                 <th></th>
@@ -230,18 +217,18 @@ if (isset($_POST['submit'])) {
 <!-- Use php to display data -->
 <?php
     
-//query to find information about employees from database
-$query = 'SELECT EmployeeID, EmployeeName, EmployeeEmail, EmployeeUser, EmployeeAdmin FROM Employee WHERE StoreID = ' . $StoreID . ';';
+//query to find information about employees from specific store from database
+$query = 'SELECT EmployeeID, EmployeeName, EmployeeEmail, EmployeeAdmin FROM Employee WHERE StoreID = ' . $StoreID . ';';
 
 $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     
 $result = queryDB($query, $db);
     
+//Display all employee data in HTML table
 while($row = nextTuple($result)) {
     echo "\n <tr>";
     echo "<td>" . $row['EmployeeName'] . "</td>";
     echo "<td>" . $row['EmployeeEmail'] . "</td>";
-    echo "<td>" . $row['EmployeeUser'] . "</td>";
 	if ($row['EmployeeAdmin']) {
             $EmployeeAdmin = 'Yes';
         } else {

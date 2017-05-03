@@ -97,6 +97,8 @@ if (isset($_POST['submit'])) {
 			
 			// start a session
 			if (session_start()) {
+				
+				//These are important session variables to determine permissions for other pages and to echo the store name in navbar
 				$_SESSION['EmployeeEmail'] = $EmployeeEmail;
 				$_SESSION['StoreName'] = $StoreName;
 				$_SESSION['StoreID'] = $StoreID;
@@ -140,6 +142,7 @@ if (isset($_POST['submit'])) {
     <button type="submit" class="btn btn-default" name="submit">Login</button>
 </form>
 
+<!-- Link to create an account if user doesn't have one yet -->
 <div class="row">
 	<div class="col-xs-12">
 		<p>Don't have an account? <a href = "GrocerInput.php">Click here to create one.</a></p>

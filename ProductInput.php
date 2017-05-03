@@ -124,7 +124,7 @@ if(isset($_POST['submit'])) {
 
 <br>
 
-<!-- Form to enter new cars -->
+<!-- Form to enter new products -->
 <div class = "row">
     <div class = "col-xs-12">
         

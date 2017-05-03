@@ -1,4 +1,4 @@
-<!-- This file allows users to make accounts -->
+<!-- This file allows grocers to make accounts -->
 
 <?php
     include_once('config.php');
@@ -56,7 +56,6 @@ if (isset($_POST['submit'])) {
     
     // get data from form
     $EmployeeEmail = $_POST['EmployeeEmail'];
-	$EmployeeUser = $_POST['EmployeeUser'];
 	$EmployeePass = $_POST['EmployeePass'];
 	$EmployeePass2 = $_POST['EmployeePass2'];
     $EmployeeAdmin = $_POST['EmployeeAdmin'];
@@ -75,13 +74,6 @@ if (isset($_POST['submit'])) {
         $isComplete = false;
     } else {
         $EmployeeEmail = makeStringSafe($db, $EmployeeEmail);
-    }
-	
-	if (!$EmployeeUser) {
-        $errorMessage .= " Please enter a username.";
-        $isComplete = false;
-    } else {
-        $EmployeeUser = makeStringSafe($db, $EmployeeUser);
     }
 
     if (!$EmployeePass) {
@@ -138,13 +130,13 @@ if (isset($_POST['submit'])) {
 				$hashedpass = crypt($EmployeePass, getSalt());
 				
 				// SQL to insert record
-				$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeeUser, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "', '" . $EmployeeEmail . "', '" . $EmployeeUser . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
+				$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "', '" . $EmployeeEmail . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
 			
 				// run the insert statement
 				$result = queryDB($insert, $db);
 				
 				// we have successfully inserted the record
-				echo ("Successfully created account " . $EmployeeUser);
+				echo ("Successfully created account " . $EmployeeEmail);
 			}
 			else {
 				$query = 'SELECT StoreID FROM Store WHERE StoreName LIKE "' . $StoreName . '";';
@@ -158,7 +150,7 @@ if (isset($_POST['submit'])) {
 				$hashedpass = crypt($EmployeePass, getSalt());
 				
 				// SQL to insert record
-				$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeeUser, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "', '" . $EmployeeEmail . "', '" . $EmployeeUser . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
+				$insert = "INSERT INTO Employee(EmployeeName, EmployeeEmail, EmployeePass, EmployeeAdmin, StoreID) VALUES ('" . $EmployeeName . "', '" . $EmployeeEmail . "', '" . $hashedpass . "', $EmployeeAdmin, $StoreID);";
 			
 				// run the insert statement
 				$result = queryDB($insert, $db);
@@ -166,6 +158,24 @@ if (isset($_POST['submit'])) {
 				// we have successfully inserted the record
 				echo ("Successfully created account " . $EmployeeUser);
 			}
+			
+			//Upload and enter picture into SQL if user uploaded a file
+			if ($_FILES['Picture']['size'] > 0) {
+        
+			$tmpName = $_FILES['Picture']['tmp_name'];
+			$fileName = $_FILES['Picture']['name'];
+        
+			$newFileName = $imagesDir . $ProductID . $fileName;
+        
+			if (move_uploaded_file($tmpName, $newFileName)) {
+				$query = "UPDATE Store SET Picture = '$newFileName' WHERE StoreID = " . $StoreID . ";";
+				queryDB($query,$db);
+			}
+			else {
+				echo "Error copying image";
+        }
+    }
+			
 		}
 		else {
 			$isComplete = false;
@@ -208,12 +218,6 @@ if (isset($_POST['submit'])) {
         <label for="EmployeeEmail">Email</label>
         <input type="email" class="form-control" name="EmployeeEmail"/>
     </div>
-	
-<!-- username -->
-    <div class="form-group">
-        <label for="EmployeeUser">Username</label>
-        <input type="name" class="form-control" name="EmployeeUser"/>
-    </div>
 
 <!-- password1 -->
     <div class="form-group">
@@ -236,7 +240,7 @@ if (isset($_POST['submit'])) {
 	
 <!-- admin -->
 	<div class="form-group">
-		<label for="EmployeeAdmin">Is this user an admin?:</label>
+		<label for="EmployeeAdmin">Is this employee an admin?:</label>
 		<label class="radio-inline">
         <input type="radio" name="EmployeeAdmin" value="1" <?php if($EmployeeAdmin || !isset($EmployeeAdmin)) { echo 'checked'; } ?>> Yes
     </label>    
@@ -244,10 +248,17 @@ if (isset($_POST['submit'])) {
         <input type="radio" name="EmployeeAdmin" value="0" <?php if(!$EmployeeAdmin && isset($EmployeeAdmin)) { echo 'checked'; } ?>> No
     </label>    
 	</div>
+	
+<!-- Picture -->
+<div class = "form-group">
+    <label for = "Picture">Store Logo/Picture:</label>
+    <input type = "file" class = "form-control" name = "Picture"/>
+</div>
     
     <button type="submit" class="btn btn-default" name="submit">Create Account</button>
 </form>
 
+<!-- Link to login if user already has an account -->
 <div class="row">
 	<div class="col-xs-12">
 		<p>Already have an account? <a href = "GrocerLogin.php">Click here to login</a></p>

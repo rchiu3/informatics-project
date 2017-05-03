@@ -12,7 +12,7 @@
 
 /*
  * This php file enables users to edit a particular product
- * It obtains the id for the product to update from an id variable passed using the GET method (in the url)
+ * It obtains the id for the product to update from an ID variable passed using the GET method (in the url)
  *
  */
     include_once('config.php');
@@ -28,7 +28,7 @@
         // get data from form
         $ProductID = $_POST['ProductID'];
         if (!isset($ProductID)) {
-            // if for some reason the id didn't post, kick them back to ProductInput.php
+            // if for some reason the ID didn't post, kick them back to ProductInput.php
             header('Location: ProductInput.php');
             exit;
         }
@@ -88,11 +88,11 @@
         //
     
         /*
-         * Check if a GET variable was passed with the id for the product
+         * Check if a GET variable was passed with the ID for the product
          *
          */
         if(!isset($_GET['ProductID'])) {
-            // if the id was not passed through the url
+            // if the ID was not passed through the url
             
             // send them out to ProductInput.php and stop executing code in this page
             header('Location: ProductInput.php');
@@ -100,7 +100,7 @@
         }
         
         /*
-         * Now we'll check to make sure the id passed through the GET variable matches the id of a product in the database
+         * Now we'll check to make sure the ID passed through the GET variable matches the ID of a product in the database
          */
         
         // connect to the database
@@ -121,7 +121,7 @@
         }
         
         /*
-         * Now we know we got a valid product id through the GET variable
+         * Now we know we got a valid product ID through the GET variable
          */
         
         // get data on product to fill out form with existing values
@@ -172,7 +172,7 @@ include_once('GrocerNav.php');
 </div>
 
 
-<!-- Showing errors, if any -->
+<!-- Showing errors if any exist -->
 <div class="row">
     <div class="col-xs-12">
 <?php

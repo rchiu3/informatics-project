@@ -14,8 +14,8 @@
 
 <?php
 /*
- * This php file prompts users on whether they want to delete a particular pizza
- * It obtains the id for the pizza to delete from an id variable passed using the GET method (in the url)
+ * This php file prompts users on whether they want to delete a product
+ * It obtains the id for the product to delete from an ID variable passed using the GET method (in the url)
  *
  */
     include_once('config.php');
@@ -45,7 +45,7 @@
             queryDB($query, $db);
         }
         
-        // send user back to pizza.php and exit 
+        // send user back to ProductInput.php and exit 
         header('Location: ProductInput.php');
         exit;
     }
@@ -53,19 +53,19 @@
     
 
     /*
-     * Check if a GET variable was passed with the id for the pizza
+     * Check if a GET variable was passed with the ID for the product
      *
      */
     if(!isset($_GET['ProductID'])) {
         // if the id was not passed through the url
         
-        // send them out to pizza.php and stop executing code in this page
+        // send them out to ProductInput.php and stop executing code in this page
         header('Location: ProductInput.php');
         exit;
     }
     
     /*
-     * Now we'll check to make sure the id passed through the GET variable matches the id of a pizza in the database
+     * Now we'll check to make sure the id passed through the GET variable matches the ID of a product in the database
      */
     
     // connect to the database
@@ -78,18 +78,18 @@
     // run the query
     $result = queryDB($query, $db);
     
-    // if the id is not in the pizza table, then we need to send the user back to pizza.php
+    // if the id is not in the product table, then we need to send the user back to ProductInput.php
     if (nTuples($result) == 0) {
-        // send them out to pizza.php and stop executing code in this page
+        // send them out to ProductInput.php and stop executing code in this page
         header('Location: ProductInput.php');
         exit;
     }
     
     /*
-     * Now we know we got a valid product id through the GET variable
+     * Now we know we got a valid product ID through the GET variable
      */
     
-    // get some data from the Product table to ask a better question when confirming deletion
+    // get data from the Product table to ask a better question when confirming deletion
     $row = nextTuple($result);
     
     $ProductName = $row['ProductName'];    
@@ -134,6 +134,8 @@ include_once('GrocerNav.php');
 <div class="row">
     <div class="col-xs-12">
 <form action="DeleteProduct.php" method="post">
+    
+    <!-- Radio buttons for yes or no selection -->
     <div class="radio">
         <label>
             <input type="radio" name="delete" value="yes" checked>
@@ -147,6 +149,7 @@ include_once('GrocerNav.php');
         </label>
     </div>
     
+    <!-- Hidden product ID to use when form is submitted --> 
     <input type="hidden" name="ProductID" value="<?php echo $ProductID; ?>"/>
     
     <button type="submit" class="btn btn-default" name="submit">Submit</button>
