@@ -37,8 +37,8 @@ include_once('GrocerNav.php');
 <!--Description of grocer website and explain admin functions -->
 <div class='row'>
     <div class='col-xs-12'>
-        <p>Welcome to the grocer homepage! Please <a href='GrocerLogin.php'>login</a> or <a href='GrocerInput.php'>create an account</a>
-            to access other grocer functions.</p>
+        <p>Welcome to the grocer homepage! <?php if(!$StoreName) {echo "Please <a href='GrocerLogin.php'>login</a> or <a href='GrocerInput.php'>create an account</a>
+            to access other grocer functions.";}?></p>
         <p>As a regular employee without administrator permissions, you'll be able to view orders that are submitted by customers.
         You'll be able to view the customer information as well as updating the order status. </p>
         
