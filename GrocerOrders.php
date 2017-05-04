@@ -141,27 +141,27 @@ $Status = $_GET['Status'];
 
 //Based on status selected by user, query to find information about orders with specified status from database
 if ($Status=='Unpaid') {
-    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.Paid = 0;';
+    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.Paid = 0 ORDER BY O.DeliveryDate;';
 }
 elseif ($Status=='Filling') {
-    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Filling Order";';
+    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Filling Order" ORDER BY O.DeliveryDate;';
 }
 elseif ($Status=='Waiting') {
-    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Waiting To Be Delivered";';
+    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Waiting To Be Delivered" ORDER BY O.DeliveryDate;';
 }
 elseif ($Status=='Delivering') {
-    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Out For Delivery";';
+    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Out For Delivery" ORDER BY O.DeliveryDate;';
 }
 elseif ($Status=='Delivered') {
-    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Delivered";';
+    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Delivered" ORDER BY O.DeliveryDate;';
 }
 elseif ($Status=='Returned') {
-    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Returned";';
+    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' AND O.OrderStatus = "Returned" ORDER BY O.DeliveryDate;';
 }
 
 //select all orders if user doesn't choose a specific status to view
 else {
-    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ';';
+    $query = 'SELECT O.OrderID, O.OrderName, O.DeliveryDate, O.Paid, O.OrderStatus FROM Order_T O, Customer C WHERE C.CustomerID = O.CustomerID AND O.StoreID = ' . $StoreID . ' ORDER BY O.DeliveryDate;';
 }
 
 $result = queryDB($query, $db);
