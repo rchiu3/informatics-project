@@ -9,7 +9,7 @@
             <!-- Displayed Nav Bar Tabs  -->
             <li <?php if ($page === 'CustomerHome') {echo 'class="active"';} ?>><a href="CustomerHome.php">Home</a></li>
             <li <?php if ($page === 'Product') {echo 'class="active"';} ?>><a href="Product.php">Products</a></li>
-            <li <?php if ($page === 'ShoppingCart') {echo 'class="active"';} ?>><a href="ShoppingCart.php">ShoppingCart</a></li>
+            <li <?php if ($page === 'ShoppingCart') {echo 'class="active"';} ?>><a href="ShoppingCart.php">Shopping Cart</a></li>
             
         </ul>
         <!-- Search Bar -->

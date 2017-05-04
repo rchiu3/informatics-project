@@ -60,7 +60,7 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
 	
 	<div class = "col-xs-2">
 		<div class = "list-group">
-			
+			<h4 class='list-group-item'>Browse By Category</h4>
 			<?php
 				//side Navbar displaying Different Product Categories
 				$query = "SELECT CategoryID, CategoryName FROM Category ORDER BY CategoryName;";

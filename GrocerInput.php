@@ -205,7 +205,7 @@ if (isset($_POST['submit'])) {
         <div class="row">
             <div class="col-xs-12">
                 
-<form action="GrocerInput.php" method="post">
+<form action="GrocerInput.php" method="post" enctype="multipart/form-data">
 	
 <!-- name -->
 	<div class="form-group">

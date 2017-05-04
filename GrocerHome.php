@@ -37,8 +37,9 @@ include_once('GrocerNav.php');
 <!--Description of grocer website and explain admin functions -->
 <div class='row'>
     <div class='col-xs-12'>
-        <p>Welcome to the grocer homepage! <?php if(!$StoreName) {echo "Please <a href='GrocerLogin.php'>login</a> or <a href='GrocerInput.php'>create an account</a>
+        <p>Welcome to the grocer home page of FreshShop! <?php if(!$StoreName) {echo "Please <a href='GrocerLogin.php'>login</a> or <a href='GrocerInput.php'>create an account</a>
             to access other grocer functions.";}?></p>
+        <p>If you are a shopper and looking to browse our aisles of fresh food, <a href='CustomerRedirect.php'>please click here.</a></p>
         <p>As a regular employee without administrator permissions, you'll be able to view orders that are submitted by customers.
         You'll be able to view the customer information as well as updating the order status. </p>
         
@@ -82,8 +83,7 @@ include_once('GrocerNav.php');
     <div class='col-xs-12'>
         <a href='EmployeeInput.php'>Employees</a>
         <p>This page is only accessible to administrators of your store. Here you can view all employees in your store, add new employees,
-        and edit or delete existing ones. For new employees, just set a default password for them and they will be asked to change it upon
-        their first login.</p>
+        and edit or delete existing ones.</p>
     </div>
 </div>
         

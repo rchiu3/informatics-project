@@ -79,7 +79,7 @@ if(isset($_POST['submit'])) {
     }
 
     //SQL to insert data from completed form into database as a new record
-    $query = "INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('$ProductName', $Price, $CategoryID, $Inventory, $StoreID);";
+    $query = 'INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ("' . $ProductName . '", ' . $Price . ', ' . $CategoryID . ', ' . $Inventory . ', ' . $StoreID . ');';
     
     //run the insert statement
     $result = queryDB($query, $db);

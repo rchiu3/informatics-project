@@ -124,10 +124,21 @@ if(isset($_POST['submit']))
         punt($errorMessage);
     }
     //Update Order_T with information from Form as well as set Paid = 1
-	$query = "UPDATE Order_T SET OrderStatus = 'Filling Order', DeliveryDate ='" . $DeliveryDate . "', DeliveryTime = '" . $DeliveryTime . "', DeliveryAddress = '" . $DeliveryAddress . "', Paid=1, OrderName = '" . $OrderName . "', ConfirmationEmail = '" . $ConfirmationEmail . "' WHERE OrderID =" . $OrderID . ";";
+	$query = "UPDATE Order_T SET CustomerID = " . $CustomerID . ", OrderStatus = 'Filling Order', DeliveryDate ='" . $DeliveryDate . "', DeliveryTime = '" . $DeliveryTime . "', DeliveryAddress = '" . $DeliveryAddress . "', Paid=1, OrderName = '" . $OrderName . "', ConfirmationEmail = '" . $ConfirmationEmail . "' WHERE OrderID =" . $OrderID . ";";
 	queryDB($query,$db);
-    echo "<div>Order has been Succesfully submitted and paid</div>";
-    
+	
+	//Update inventory count
+	$query = "SELECT ProductID, Quantity FROM OrderLine WHERE OrderID=$OrderID";
+	$result = queryDB($query,$db);
+	
+	while($row = nextTuple($result)) {
+		$query = "UPDATE Product SET Inventory = Inventory - " . $row['Quantity'] . " WHERE ProductID= " . $row['ProductID'] . ";";
+		queryDB($query,$db);
+	}
+	unset($_SESSION['OrderID']);
+	echo "<div class='container'  style = 'margin-top:50px'>";
+    echo "<div class='alert alert-success'><strong>Successfully placed your order!</strong> Please check $ConfirmationEmail for your order confirmation and receipt.</div>";
+    echo "</div>";
 	
 }
 ?>

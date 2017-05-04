@@ -19,12 +19,6 @@ CREATE TABLE Customer (
 	PRIMARY KEY (CustomerID)
 );
 
-INSERT INTO Customer(CustomerName, CustomerAddress, CustomerEmail) VALUES ('Rudy Chiu', '123 Main Street', 'rudy-chiu@uiowa.edu');
-INSERT INTO Customer(CustomerName, CustomerAddress, CustomerEmail) VALUES ('Leo Perenzuela', '456 Main Street', 'leo-perezeula@uiowa.edu');
-	
-	-- Should we include payment info in customer table if so what is needed? --
-	-- Credit Card Number, Name on Card, Billing Address, CSV, Expiration Date, Card Type --
-
 -- Order Table --
 
 CREATE TABLE Order_T (
@@ -43,9 +37,6 @@ CREATE TABLE Order_T (
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
-INSERT INTO Order_T(OrderDate, StoreID, Paid, CustomerID, DeliveryDate, DeliveryAddress, OrderStatus) VALUES ('2017-4-15', 5, 1, 1, '2017-4-18', '123 Main Street', 'Out For Delivery');
-INSERT INTO Order_T(OrderDate, StoreID, Paid, CustomerID, DeliveryDate, DeliveryAddress, OrderStatus) VALUES ('2017-4-16', 4, 1, 2, '2017-4-19', '456 Main Street', 'Processing');
-
 -- Store Table --
 
 CREATE TABLE Store (
@@ -54,12 +45,6 @@ CREATE TABLE Store (
     Picture varchar(128),
     PRIMARY KEY (StoreID)
 );
-
--- Sample store data --
-
-INSERT INTO Store(StoreName) VALUES ("John's Grocery");
-INSERT INTO Store(StoreName) VALUES ("Walmart");
-INSERT INTO Store(StoreName) VALUES ("Hyvee");
  
 -- Category Table --
 
@@ -95,28 +80,6 @@ CREATE TABLE Product (
     FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
 
--- Sample product data --
--- John's Grocery's products (StoreID = 1) --
--- Dairy CatID = 1 --
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('2% Milk - 1 Gallon', 4.99, 1, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Grade A Large Eggs - 12 ct', 1.99, 1, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('1% Milk - 1 Gallon', 4.99, 1, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Grade A Large Eggs - 18 ct', 2.49, 1, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Butter - 16 oz', 1.99, 1, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('American Cheese - 12 oz Pack', 2.89, 1, 100, 1);
--- Produce CatID = 2 --
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Bananas - .5 lbs', .89, 2, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Lemons - 1 ea', .99, 2, 200, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Green Bell Pepper - 1 ea', .33, 2, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('HoneyCrisp Apples - .45 lbs', 2.49, 2, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Roma Tomatoes - .25 lbs', .99, 2, 100, 1);
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Blueberries - 6 oz Pack', 4.29, 2, 100, 1);
--- Bakery CatID = 3 --
--- Walmart's products (StoreID = 2)--
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('2% Milk - 1 Gallon', 4.99, 1, 100, 2);
-
--- Hyvee's products (StoreID = 3 --
-INSERT INTO Product(ProductName, Price, CategoryID, Inventory, StoreID) VALUES ('Grade A Large Eggs - 12 ct', 1.99, 1, 100, 3);
 -- OrderLine Table --
 
 CREATE TABLE OrderLine (
@@ -129,14 +92,6 @@ CREATE TABLE OrderLine (
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (3, 1, 4);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (2, 1, 2);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (1, 1, 7);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (2, 1, 1);
-
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (1, 2, 3);
-INSERT INTO OrderLine(Quantity, OrderID, ProductID) VALUES (3, 2, 6);
-
 -- Employee Table --
 
 CREATE TABLE Employee (
@@ -148,19 +103,4 @@ CREATE TABLE Employee (
     StoreID int unsigned NOT NULL,
     PRIMARY KEY (EmployeeID),
     FOREIGN KEY (StoreID) REFERENCES Store(StoreID)
-);
-
--- Payment Table --
--- Not sure how/or if we should have foreign keys in this (CustomerID) only question is what will we do with guests?? --
-
-CREATE TABLE Payment (
-	PaymentID int unsigned NOT NULL AUTO_INCREMENT,
-	CreditCardNumber varchar(30) NOT NULL,
-	CardName varchar(50) NOT NULL,
-	BillingAddress varchar(200) NOT NULL,
-	CSV int(10) NOT NULL,
-	ExpirationDate varchar(10) NOT NULL,
-	CardType varchar(20) NOT NULL,
-	PRIMARY KEY (PaymentID)
-	
 );

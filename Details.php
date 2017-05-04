@@ -45,7 +45,9 @@ $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
                    </thead>
     <?php
     //Query to get information for Order Display
-     $query = 'SELECT o.OrderLineID, o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture, s.StoreName FROM Product p, OrderLine o, Store s WHERE s.StoreID = p.StoreID AND p.ProductID = o.ProductID AND o.OrderID = ' . $OrderID . ' ORDER BY StoreName;';
+	$OrderID = $_GET['OrderID'];
+	
+    $query = 'SELECT o.OrderLineID, o.ProductID, o.Quantity, p.ProductName, p.Price, p.Picture, s.StoreName FROM Product p, OrderLine o, Store s WHERE s.StoreID = p.StoreID AND p.ProductID = o.ProductID AND o.OrderID = ' . $OrderID . ' ORDER BY StoreName;';
 	
 	$result = queryDB($query, $db);
 	//Display Order Information

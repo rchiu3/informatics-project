@@ -36,15 +36,25 @@ include_once('CustomerNav.php');
 
 	<div class="container" style="margin-top:50px">
 	
+	<div class="row">
+		<div class="col-xs-12">
+			<h3>Welcome to FreshShop!</h3>
+			<p>Getting your groceries is now as simple as a few clicks, then waiting at your door for them to arrive! You don't even need
+			one of our free accounts to place an order. Please select a grocer to begin browsing their products.</p>
+			
+			<p>If you're a new store that wants to list your products on FreshShop or you
+			already have an existing store, <a href='GrocerRedirect.php'>please click here.</a></p>
+		</div>
+	</div>
+	
+	<br>
 	
 	<div class = "row">
-    <div class = "col-xs-12">
+    <div class = "col-xs-4">
         <table class = "table table-hover">
             <thead>
-                <th>Select A Grocer</th>
-				
-				
-
+                <th></th>
+				<th></th>
             </thead>
 			
 
@@ -54,14 +64,21 @@ include_once('CustomerNav.php');
 // SQL query to list products from database
 //***** STILL Need to group by Category *****
 // And Still unclear how we want this page to be shown.
-$query = "SELECT StoreName, StoreID FROM Store";
+$query = "SELECT StoreName, StoreID, Picture FROM Store";
 
 $result = queryDB($query, $db);
 
 while($row = nextTuple($result))
 {
 	echo "\n <tr>";
-	echo "<td><a href='SetStore.php?StoreID=" . $row['StoreID'] . "'> " . $row['StoreName'] . "";
+	echo "<td><a href='SetStore.php?StoreID=" . $row['StoreID'] . "'>" . $row['StoreName'] . "</a></td>";
+	echo "<td>";
+    if ($row['Picture']) {
+        $imageLocation = $row['Picture'];
+        $altText = $row['StoreName'];
+        echo "<img src='$imageLocation' width='150' alt='$altText'>";
+    }
+    echo "</td>";
 	echo "</tr> \n";
     }
 ?>

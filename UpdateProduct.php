@@ -70,7 +70,7 @@
             // first update product record
             //
             // put together SQL statement to update the product
-            $query = "UPDATE Product SET CategoryID=$CategoryID, Price=$Price, ProductName='$ProductName', Inventory=$Inventory WHERE ProductID=$ProductID;";
+            $query = 'UPDATE Product SET CategoryID=' . $CategoryID . ', Price=' . $Price . ', ProductName="' . $ProductName . '", Inventory=' . $Inventory . ' WHERE ProductID=' . $ProductID . ';';
             
             // connect to the database
             $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
